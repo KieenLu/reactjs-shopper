@@ -22,6 +22,13 @@ export const validate = (rules, forms) => {
   const errorObject = {};
   for (let name in rules) {
     for (let rule of rules[name]) {
+      if (typeof rule === "function") {
+        let error = rule(forms[name], forms);
+        if (error) {
+          errorObject[name] = error;
+          break;
+        }
+      }
       if (rule.required) {
         if (typeof forms[name] === "boolean" && !forms[name]) {
         } else if (typeof forms[name] !== "boolean" && !forms[name]?.trim?.()) {
