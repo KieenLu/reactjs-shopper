@@ -1,46 +1,55 @@
 import { Button } from "@/components/Button";
 import { Field } from "@/components/Field";
+import { Form } from "@/components/Form";
 import { useAuth } from "@/hooks/useAuth";
 import { useForm } from "@/hooks/useForm";
+import { useQuery } from "@/hooks/useQuery";
+import { useScrollTop } from "@/hooks/useScrollTop";
 import { organizationService } from "@/services/organization";
 import { handleError } from "@/utils/handleError";
 import { regexp, required } from "@/utils/validate";
 import { message } from "antd";
-import React from "react";
 
 const ContactPage = () => {
+  useScrollTop();
   const { user } = useAuth();
-  const { validate, values, register } = useForm(
-    {
-      name: [required()],
-      username: [
-        required(),
-        regexp("email", "Vui lòng nhập đúng định dạng Email"),
-      ],
-      title: [required()],
-      message: [required()],
-      phone: [required()],
-      fb: [required()],
-    },
-    user || user?.data
-  );
-  const onSubmit = async (ev) => {
-    ev.preventDefault();
+  const rules = {
+    name: [required()],
+    username: [required()],
+    phone: [
+      required(),
+      regexp("phone", "Vui lòng nhập đúng định dạng số điện thoại"),
+    ],
+    title: [required()],
+    content: [required()],
+    fb: [required(), regexp("fb", "Vui lòng nhập đúng URL Facebook của bạn")],
+  };
+  const { refetch: contactService, loading: contactLoading } = useQuery({
+    queryFn: ({ params }) => organizationService.contact(...params),
+    enabled: false,
+  });
+  const onSubmit = async (values) => {
     try {
-      if (validate()) {
-        // await organizationService.contact(values);
-        console.log(values);
-        message.success(
-          "Đã gửi liên hệ thành công, chúng tôi sẽ liên hệ bạn trong thời gian sớm nhất có thể"
-        );
-      }
+      await contactService({
+        name: values.name,
+        email: values.username,
+        phone: values.phone,
+        fb: values.fb,
+        title: values.title,
+        content: values.content,
+      });
+      // if (contactForm.validate()) {
+      //   console.log("object");
+      // }
+      message.success(
+        "Đã gửi thông tin liên hệ thành công. Chúng thôi sẽ liên lạc với bạn trong thời gian sớm nhất có thể"
+      );
     } catch (err) {
       handleError(err);
     }
   };
   return (
     <div>
-      {/* BREADCRUMB */}
       <nav className="py-5">
         <div className="container">
           <div className="row">
@@ -144,38 +153,38 @@ const ContactPage = () => {
               </aside>
             </div>
             <div className="col-12 col-md-8">
-              {/* Form */}
-              <form>
-                {/* Email */}
-                <Field placeholder="Full Name *" {...register("name")} />
-                {/* Email */}
-                <Field
-                  placeholder="Email Contact *"
-                  {...register("username")}
-                  disabled
-                />
-                {/* Email */}
-                <Field placeholder="Number Phone *" {...register("phone")} />
-                <Field placeholder="Facebook *" {...register("fb")} />
-
-                <Field placeholder="Title *" {...register("title")} />
-                {/* Email */}
-                <Field
-                  placeholder="Message *"
-                  {...register("message")}
-                  renderField={(props) => (
-                    <textarea
-                      className="form-control form-control-sm"
-                      id="contactMessage"
-                      style={{ width: "100%" }}
-                      {...props}
-                      rows={5}
-                    />
-                  )}
-                />
-                {/* Button */}
-                <Button onClick={onSubmit}>Send Message</Button>
-              </form>
+              <Form form={{ rules, initialValue: user }} onSubmit={onSubmit}>
+                <Form.Item name="name">
+                  <Field placeholder="Họ và Tên . . ." />
+                </Form.Item>
+                <Form.Item name="username">
+                  <Field disabled placeholder="Địa chỉ Email . . ." />
+                </Form.Item>
+                <Form.Item name="phone">
+                  <Field placeholder="Số điện thoại . . ." />
+                </Form.Item>
+                <Form.Item name="fb">
+                  <Field placeholder="URL Facebook . . ." />
+                </Form.Item>
+                <Form.Item name="title">
+                  <Field placeholder="Tiêu đề . . ." />
+                </Form.Item>
+                <Form.Item name="content">
+                  <Field
+                    placeholder="Nội dung . . ."
+                    renderField={(props) => (
+                      <textarea
+                        className="form-control form-control-sm"
+                        id="contactMessage"
+                        style={{ width: "100%" }}
+                        {...props}
+                        rows={5}
+                      />
+                    )}
+                  />
+                </Form.Item>
+                <Button loading={contactLoading}>Gửi</Button>
+              </Form>
             </div>
           </div>
         </div>

@@ -134,7 +134,7 @@ const Header = () => {
             {/* Nav */}
             <ul className="nav navbar-nav mr-8">
               <li className="nav-item">
-                <Link className="nav-link" to={PATH.shipping}>
+                <Link className="nav-link" to={PATH.shiping}>
                   Quy định giao hàng
                 </Link>
               </li>

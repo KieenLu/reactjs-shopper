@@ -1,15 +1,16 @@
 import { Button } from "@/components/Button";
 import { Field } from "@/components/Field";
-import { useAuth } from "@/hooks/useAuth";
 import { useForm } from "@/hooks/useForm";
-import { registerThunkAction } from "@/stories/auth";
+import { useQuery } from "@/hooks/useQuery";
+import { userService } from "@/services/user";
+import { handleError } from "@/utils/handleError";
 import { confirm, minMax, regexp, required } from "@/utils/validate";
+import { message } from "antd";
 import { useDispatch } from "react-redux";
 
 const RegisterPage = () => {
-  const { registerLoading } = useAuth();
   const dispatch = useDispatch();
-  const { validate, register, values } = useForm({
+  const { validate, register, values, reset } = useForm({
     name: [required()],
     username: [
       required(),
@@ -18,11 +19,20 @@ const RegisterPage = () => {
     password: [required(), minMax(6, 32)],
     confirmPassword: [required(), confirm("password")],
   });
+  const { refetch: registerService, loading: registerLoading } = useQuery({
+    queryFn: ({ params }) => userService.signup(...params),
+    enabled: false,
+  });
   const onSubmit = async (ev) => {
     ev.preventDefault();
     try {
       if (validate()) {
-        await dispatch(registerThunkAction(values));
+        // await dispatch(registerThunkAction(values));
+        await registerService(values);
+        message.success(
+          "Đăng ký tài khoản thành công, hãy xác nhận tài khoản thông qua Email đăng ký của bạn"
+        );
+        reset();
       }
     } catch (err) {
       handleError(err);

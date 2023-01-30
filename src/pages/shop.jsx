@@ -1,23 +1,17 @@
-import ProductCard from "@/components/ProductCard";
-import React, { useState } from "react";
-import queryString from "query-string";
-import {
-  Link,
-  NavLink,
-  generatePath,
-  useMatch,
-  useSearchParams,
-} from "react-router-dom";
-import { productService } from "@/services/product";
-import { useQuery } from "@/hooks/useQuery";
-import { ProductCardLoading } from "@/components/ProductCardLoading";
-import { array } from "@/utils/array";
 import { Paginate } from "@/components/Paginate";
+import ProductCard from "@/components/ProductCard";
+import { ProductCardLoading } from "@/components/ProductCardLoading";
 import { PATH } from "@/config/path";
 import { useCategories, useCategory } from "@/hooks/useCategories";
+import { useQuery } from "@/hooks/useQuery";
 import { useSearch } from "@/hooks/useSearch";
-import classNames from "classnames";
+import { productService } from "@/services/product";
+import { array } from "@/utils/array";
 import { slugify } from "@/utils/slugify";
+import classNames from "classnames";
+import queryString from "query-string";
+import { useState } from "react";
+import { Link, NavLink, generatePath, useMatch } from "react-router-dom";
 const ShopPage = () => {
   // const [search] = useSearchParams();
   const [categoryId, setCategoryId] = useState("");
@@ -39,24 +33,26 @@ const ShopPage = () => {
   // const categories = search.get("categories");
   // const currentPage = search.get("page") || "1";
 
-  // const qs = queryString.stringify({
-  //   name: keyword || undefined,
-  //   page: currentPage,
-  //   categories: categories || undefined,
-  // });
   const [search, setSearch] = useSearch({
     page: 1,
+    sort: "newest",
   });
+  const [minPrice, setMinPrice] = useState(search.minPrice || "");
+  const [maxPrice, setMaxPrice] = useState(search.maxPrice || "");
   const query = queryString.stringify({
     page: search.page,
     categories: match?.params?.id,
     name: search.search || undefined,
+    minPrice: search.minPrice || undefined,
+    maxPrice: search.maxPrice || undefined,
+    sort: search.sort,
   });
   const { data: { data: products = [], paginate = {} } = {}, loading } =
     useQuery({
       queryFn: () => productService.getProduct(`${query}`),
       dependencyList: [query],
-      // keepPreviousData: true,
+      keepPreviousData: true,
+      queryKey: [query, search.page],
     });
   return (
     <div>
@@ -436,10 +432,11 @@ const ShopPage = () => {
                       <div className="d-flex align-items-center">
                         {/* Input */}
                         <input
+                          onChange={(ev) => setMinPrice(ev.target.value)}
                           type="number"
                           className="form-control form-control-xs"
-                          placeholder="$10.00"
-                          min={10}
+                          placeholder="Giá thấp nhất"
+                          value={minPrice}
                         />
                         {/* Divider */}
                         <div className="text-gray-350 mx-2">‒</div>
@@ -447,11 +444,21 @@ const ShopPage = () => {
                         <input
                           type="number"
                           className="form-control form-control-xs"
-                          placeholder="$350.00"
-                          max={350}
+                          placeholder="Giá cao nhất"
+                          value={maxPrice}
+                          onChange={(ev) => setMaxPrice(ev.target.value)}
                         />
                       </div>
-                      <button className="btn btn-outline-dark btn-block mt-5">
+                      <button
+                        onClick={(ev) => {
+                          ev.preventDefault();
+                          setSearch({
+                            minPrice: minPrice || undefined,
+                            maxPrice: maxPrice || undefined,
+                          });
+                        }}
+                        className="btn btn-outline-dark btn-block mt-5"
+                      >
                         Apply
                       </button>
                     </div>
@@ -571,13 +578,26 @@ const ShopPage = () => {
                 <div className="col-12 col-md-auto flex gap-1 items-center whitespace-nowrap">
                   {/* Select */}
                   Sắp xếp theo:
-                  <select className="custom-select custom-select-xs">
-                    <option>Mới nhất</option>
-                    <option>Giá giảm dần</option>
-                    <option>Giá tăng dần</option>
-                    <option>Giảm giá nhiều nhất</option>
-                    <option>Đánh giá cao nhất</option>
-                    <option>Mua nhiều nhất</option>
+                  <select
+                    value={search.sort}
+                    onChange={(ev) => {
+                      setSearch({
+                        sort: ev.target.value,
+                        page: 1,
+                      });
+                    }}
+                    className="custom-select custom-select-xs"
+                  >
+                    <option value="newest">Mới nhất</option>
+                    <option value="real_price.desc">Giá giảm dần</option>
+                    <option value="real_price.asc">Giá tăng dần</option>
+                    <option value="discount_rate.desc">
+                      Giảm giá nhiều nhất
+                    </option>
+                    <option value="rating_average.desc">
+                      Đánh giá cao nhất
+                    </option>
+                    <option value="top_seller">Mua nhiều nhất</option>
                   </select>
                 </div>
               </div>

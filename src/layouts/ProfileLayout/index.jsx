@@ -46,7 +46,7 @@ export const ProfileLayout = () => {
                 </NavLink>
                 <NavLink
                   className="list-group-item list-group-item-action dropright-toggle "
-                  to={PATH.profile.addressDetail}
+                  to={PATH.profile.address}
                 >
                   Sổ địa chỉ
                 </NavLink>

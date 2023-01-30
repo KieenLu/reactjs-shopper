@@ -1,68 +1,76 @@
 import { Button } from "@/components/Button";
 import { Field } from "@/components/Field";
+import { Form } from "@/components/Form";
 import { useAuth } from "@/hooks/useAuth";
-import { useForm } from "@/hooks/useForm";
-import { required } from "@/utils/validate";
-import { useSelector } from "react-redux";
+import { regexp, required } from "@/utils/validate";
 
 export const Profile = () => {
   const { user } = useAuth();
+  const rules = {
+    fullName: [required()],
+    phone: [
+      required(),
+      regexp("phone", "Vui lòng nhập đúng định dạng số điện thoại"),
+    ],
+  };
+  const onSubmit = (ev) => {
+    ev.preventDefault();
+    console.log("object");
+  };
 
-  const { validate, register, values } = useForm(
-    {
-      name: [required()],
-    },
-    user?.data || user
-  );
   return (
-    <form>
+    <Form form={{ rules, initialValue: user }} onSubmit={onSubmit}>
       <div className="row">
         <div className="col-12">
           <div className="profile-avatar"></div>
         </div>
         <div className="col-12">
           {/* Full Name */}
-          <Field
-            {...register("name")}
-            placeholder="Full Name"
-            label="Full Name *"
-          />
+          <Form.Item name="name">
+            <Field label="Full Name *" placeholder="Full Name . . . " />
+          </Form.Item>
+        </div>
+        <div className="col-12 col-md-6">
+          {/* Phone */}
+          <Form.Item name="phone">
+            <Field label="Number Phone *" placeholder="Number Phone . . . " />
+          </Form.Item>
         </div>
         <div className="col-12 col-md-6">
           {/* Email */}
-          <Field label="Number Phone*" {...register("phone")} />
-        </div>
-        <div className="col-12 col-md-6">
-          {/* Email */}
-          <Field label="Email Address *" disabled {...register("username")} />
+          <Form.Item name="username">
+            <Field
+              label="Email *"
+              disabled
+              placeholder="Email Address . . . "
+            />
+          </Form.Item>
         </div>
         <div className="col-12">
-          {/* Password */}
-          <Field
-            label="Current Password"
-            type="password"
-            placeholder="Current Password"
-            {...register("currentPassword")}
-          />
+          <Form.Item name="currentPassword">
+            <Field
+              label="Current Password *"
+              placeholder="Current Password . . . "
+            />
+          </Form.Item>
         </div>
         <div className="col-12 col-md-6">
-          <Field
-            label="New Password"
-            type="password"
-            placeholder="New Password"
-            {...register("newPassword")}
-          />
+          <Form.Item name="confirmPassword">
+            <Field
+              label="Confirm Password *"
+              placeholder="Confirm Password . . . "
+            />
+          </Form.Item>
         </div>
         <div className="col-12 col-md-6">
-          <Field
-            label="Confirm Password"
-            type="password"
-            placeholder="Confirm Password"
-            {...register("confirmPassword")}
-          />
+          <Form.Item name="newPassword">
+            <Field label="New Password *" placeholder="New Password . . . " />
+          </Form.Item>
         </div>
-        <div className="col-12 col-lg-6">
-          <Field label="Date of Birth" type="date" {...register("birthday")} />
+        <div className="col-12 col-md-6">
+          <Form.Item name="birthday">
+            <Field label="Birthday *" type="date" />
+          </Form.Item>
         </div>
         <div className="col-12 col-lg-6">
           {/* Gender */}
@@ -70,10 +78,10 @@ export const Profile = () => {
         </div>
         <div className="col-12">
           {/* Button */}
-          <Button>Save Changes</Button>
+          <Button onClick={onSubmit}> Save Changes</Button>
         </div>
       </div>
-    </form>
+    </Form>
   );
 };
 export default Profile;

@@ -12,11 +12,16 @@ import { Link } from "react-router-dom";
 export const ProfileWishlist = () => {
   const [search] = useSearch({ page: 1, limit: 9 });
   const qs = queryString.stringify(search);
-  const { data: { data: products = [], paginate = {} } = {}, loading } =
-    useQuery({
-      queryFn: () => productService.getWishList(`${qs}`),
-      dependencyList: [qs],
-    });
+  const {
+    data: { data: products = [], paginate = {} } = {},
+    loading,
+    refetch,
+    clearPreviousData,
+  } = useQuery({
+    queryFn: () => productService.getWishList(`${qs}`),
+    dependencyList: [qs],
+    keepPreviousData: true,
+  });
   return (
     <>
       <div className="row">
@@ -29,7 +34,14 @@ export const ProfileWishlist = () => {
         ) : products.length > 0 ? (
           products.map((e) => (
             <div key={e.id} className="col-6 col-md-4">
-              <ProductCard showRemove {...e} />
+              <ProductCard
+                showRemove
+                onRemoveWishlistSuccess={() => {
+                  refetch();
+                  clearPreviousData();
+                }}
+                {...e}
+              />
             </div>
           ))
         ) : (

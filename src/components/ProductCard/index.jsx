@@ -9,6 +9,7 @@ import { Link, generatePath, useNavigate } from "react-router-dom";
 import { Button } from "../Button";
 import { cartService } from "@/services/cart";
 import { updateQuantity } from "@/stories/cart";
+import { useRef } from "react";
 
 const ProductCard = ({
   onRemoveWishlistSuccess,
@@ -34,22 +35,28 @@ const ProductCard = ({
   const salePrice = price - real_price;
   const image_1 = images[0].thumbnail_url;
   const image_2 = images?.[1]?.thumbnail_url || image_1;
+  const loadingWishlsitRef = useRef(false);
 
   const onAddWishlist = async () => {
+    if (loadingWishlsitRef.current) return;
+    loadingWishlsitRef.current = true;
+    const key = `wishlist-${id}`;
     try {
       message.loading({
-        key: "addWishList",
+        key,
         content: "Đang thêm sản phẩm vào danh sách yêu thích",
+        duration: 1,
       });
       await productService.addWishList(id);
       message.success({
-        key: "addWishList",
-        duration: 2,
+        key,
         content: `Đã thêm sản phẩm "${name}" vào danh sách yêu thích thành công.`,
+        duration: 1,
       });
     } catch (err) {
-      console.error(err);
+      handleError(err, key);
     }
+    loadingWishlsitRef.current = false;
   };
   const _onRemoveWishlistSuccess = async (ev) => {
     ev.preventDefault();
@@ -59,14 +66,16 @@ const ProductCard = ({
         content: "Đang xóa sản phẩm khỏi danh sách yêu thích",
       });
       await productService.deleteWishList(id);
+      onRemoveWishlistSuccess?.(id);
       message.success({
         key: "removeWishList",
-        duration: 2,
         content: `Đã xóa sản phẩm "${name}" khỏi danh sách yêu thích thành công.`,
+        duration: 2,
       });
     } catch (err) {
       handleError(err);
     }
+    loadingWishlsitRef.current = false;
   };
   const onAddProductCart = async () => {
     try {

@@ -9,8 +9,6 @@ export const getToken = () => {
 export const clearToken = () => {
     localStorage.removeItem(TOKEN_KEY)
 }
-
-
 export const setUser = (data) => {
     localStorage.setItem(USER_KEY, JSON.stringify(data))
 }

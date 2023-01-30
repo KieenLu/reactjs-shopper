@@ -1,4 +1,6 @@
+import { PATH } from "@/config/path";
 import React from "react";
+import { Link } from "react-router-dom";
 
 const ShippingPage = () => {
   return (
@@ -215,20 +217,20 @@ const ShippingPage = () => {
               {/* Buttons */}
               <div className="row mt-9">
                 <div className="col-12 col-md-6">
-                  <a
+                  <Link
                     className="btn btn-lg btn-block btn-outline-dark"
-                    href="faq.html"
+                    to={PATH.faq}
                   >
                     Have more Questions?
-                  </a>
+                  </Link>
                 </div>
                 <div className="col-12 col-md-6">
-                  <a
+                  <Link
                     className="btn btn-lg btn-block btn-outline-dark"
-                    href="contact-us.html"
+                    to={PATH.contact}
                   >
                     Want to Contact Us?
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>

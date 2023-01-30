@@ -12,19 +12,19 @@ import {
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { message } from "antd";
 
-export const registerThunkAction = createAsyncThunk(
-  "auth/register",
-  async (data, thunkApi) => {
-    try {
-      await userService.signup(data);
-      message.success(
-        "Đăng ký tài khoản thành công, hãy xác nhận tài khoản thông qua Email đăng ký của bạn"
-      );
-    } catch (err) {
-      handleError(err);
-    }
-  }
-);
+// export const registerThunkAction = createAsyncThunk(
+//   "auth/register",
+//   async (data, thunkApi) => {
+//     try {
+//       await userService.signup(data);
+//       message.success(
+//         "Đăng ký tài khoản thành công, hãy xác nhận tài khoản thông qua Email đăng ký của bạn"
+//       );
+//     } catch (err) {
+//       handleError(err);
+//     }
+//   }
+// );
 
 export const loginThunkAction = createAsyncThunk(
   "auth/login",

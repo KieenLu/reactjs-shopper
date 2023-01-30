@@ -1,31 +1,8 @@
-// rules = {
-//     name: [
-//         { required: true }
-//     ],
-//     email: [
-//         { required: true },
-//         { regex: 'email' }
-//     ],
-//     phone: [
-//         { required: true },
-//         { regex: 'phone' }
-//     ]
-// }
-
-// forms = {
-//     name: 'Dang Thuyen Vuong',
-//     email: 'dangthuyenvuong@gmail.com',
-//     phone: '0949816596'
-// }
-
-// errorObj = {
-//     name: 'Please fill in this field'
-// }
-
 const REGEXP = {
   email: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
   phone: /(84|0[3|5|7|8|9])+([0-9]{8})\b/,
   url: /[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/,
+  fb: /(?:https?:\/\/)?(?:www\.)?(mbasic.facebook|m\.facebook|facebook|fb)\.(com|me)\/(?:(?:\w\.)*#!\/)?(?:pages\/)?(?:[\w\-\.]*\/)*([\w\-\.]*)/,
 };
 
 const ERROR_MESSAGE = {
