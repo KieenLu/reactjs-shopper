@@ -11,6 +11,9 @@ export const productService = {
   getCategories() {
     return http.get(`${PRODUCT_API}/categories`);
   },
+  getCategoriesDetail(id) {
+    return http.get(`${PRODUCT_API}/categories/${id}`);
+  },
   getWishList(query = "") {
     return http.get(`${PRODUCT_API}/wishlist/?${query}`);
   },

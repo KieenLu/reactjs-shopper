@@ -1,15 +1,14 @@
 import { PATH } from "@/config/path";
 import { useAuth } from "@/hooks/useAuth";
 import { productService } from "@/services/product";
+import { updateQuantity } from "@/stories/cart";
 import { currency } from "@/utils/currency";
 import { handleError } from "@/utils/handleError";
 import { Popconfirm, message } from "antd";
-import { useDispatch } from "react-redux";
-import { Link, generatePath, useNavigate } from "react-router-dom";
-import { Button } from "../Button";
-import { cartService } from "@/services/cart";
-import { updateQuantity } from "@/stories/cart";
 import { useRef } from "react";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { Button } from "../Button";
 
 const ProductCard = ({
   onRemoveWishlistSuccess,
@@ -25,10 +24,11 @@ const ProductCard = ({
   rating_average,
   review_count,
 }) => {
-  const path = generatePath(PATH.shop, {
-    slug: slug,
-    id: id,
-  });
+  // const path = generatePath(PATH.shop, {
+  //   slug: slug,
+  //   id: id,
+  // });
+  const _slug = "/" + slug;
   const { user } = useAuth();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -108,7 +108,7 @@ const ProductCard = ({
       )}
       <div className="card-img">
         {/* Image */}
-        <Link to={path} className="card-img-hover">
+        <Link to={_slug} className="card-img-hover">
           <img className="card-img-top card-img-back" src={image_2} alt="..." />
           <img
             className="card-img-top card-img-front"
@@ -219,7 +219,7 @@ const ProductCard = ({
           </a>
         </div>
         <div className="card-product-title font-weight-bold">
-          <Link className="text-body card-product-name" to={path}>
+          <Link className="text-body card-product-name" to={_slug}>
             {name}
           </Link>
         </div>

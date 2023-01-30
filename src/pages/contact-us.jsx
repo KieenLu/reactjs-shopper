@@ -9,6 +9,7 @@ import { organizationService } from "@/services/organization";
 import { handleError } from "@/utils/handleError";
 import { regexp, required } from "@/utils/validate";
 import { message } from "antd";
+import { Helmet } from "react-helmet";
 
 const ContactPage = () => {
   useScrollTop();
@@ -50,6 +51,9 @@ const ContactPage = () => {
   };
   return (
     <div>
+      <Helmet>
+        <title>Liên hệ</title>
+      </Helmet>
       <nav className="py-5">
         <div className="container">
           <div className="row">

@@ -1,18 +1,42 @@
 import { PATH } from "@/config/path";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { SearchDrawer } from "../SearchDrawer";
 import { useDispatch, useSelector } from "react-redux";
 import { cartActions } from "@/stories/cart";
+import { avatarDefault } from "@/config/asssets";
+import { useAuth } from "@/hooks/useAuth";
+import { Dropdown } from "antd";
+import { logoutThunkAction } from "@/stories/auth";
 
 const Header = () => {
   const dispatch = useDispatch();
+  const { user } = useAuth();
   const { cart } = useSelector((store) => store.cart);
   const [openSearchDrawer, setOpenSearchDrawer] = useState(false);
   const onOpenSearchDrawer = (ev) => {
     ev.preventDefault();
     setOpenSearchDrawer(true);
   };
+  const items = useMemo(() => {
+    return [
+      {
+        key: 1,
+        label: <Link to={PATH.profile.index}>Tài khoản của tôi</Link>,
+      },
+      {
+        key: 3,
+        label: <Link to={PATH.profile.order}>Đơn hàng</Link>,
+      },
+      {
+        key: 2,
+        label: "Đăng xuất",
+        onClick: () => {
+          dispatch(logoutThunkAction());
+        },
+      },
+    ];
+  }, []);
   const onOpenCart = (ev) => {
     ev.preventDefault();
     dispatch(cartActions.toggleCartDrawer(true));
@@ -229,7 +253,7 @@ const Header = () => {
               </li>
             </ul>
             {/* Nav */}
-            <ul className="navbar-nav flex-row">
+            {/* <ul className="navbar-nav flex-row">
               <li className="nav-item">
                 <a
                   onClick={onOpenSearchDrawer}
@@ -259,6 +283,51 @@ const Header = () => {
                 <Link className="nav-link" to={PATH.account}>
                   <i className="fe fe-user" />
                 </Link>
+              </li>
+            </ul> */}
+            <ul className="navbar-nav flex-row">
+              <li className="nav-item">
+                <a
+                  onClick={onOpenSearchDrawer}
+                  className="nav-link"
+                  data-toggle="modal"
+                  href="#modalSearch"
+                >
+                  <i className="fe fe-search" />
+                </a>
+              </li>
+              <li className="nav-item ml-lg-n4">
+                <Link className="nav-link" to={PATH.profile.wishlist}>
+                  <i className="fe fe-heart" />
+                </Link>
+              </li>
+              <li className="nav-item ml-lg-n4">
+                <a
+                  className="nav-link"
+                  data-toggle="modal"
+                  href="#"
+                  onClick={onOpenCart}
+                >
+                  <span data-cart-items={2}>
+                    <i className="fe fe-shopping-cart" />
+                  </span>
+                </a>
+              </li>
+              <li className="nav-item ml-lg-n4">
+                {user ? (
+                  <Dropdown menu={{ items }} placement="bottomRight" arrow>
+                    <Link
+                      className="header-avatar nav-link"
+                      to={PATH.profile.index}
+                    >
+                      <img src={user.avatar || avatarDefault} />
+                    </Link>
+                  </Dropdown>
+                ) : (
+                  <Link className="nav-link" to={PATH.account}>
+                    <i className="fe fe-user" />
+                  </Link>
+                )}
               </li>
             </ul>
           </div>

@@ -1,6 +1,7 @@
 import { PATH } from "@/config/path";
 import { logoutThunkAction } from "@/stories/auth";
 import React, { Suspense } from "react";
+import { Helmet } from "react-helmet";
 import { useDispatch } from "react-redux";
 import { NavLink, Outlet } from "react-router-dom";
 
@@ -13,6 +14,9 @@ export const ProfileLayout = () => {
 
   return (
     <section className="pt-7 pb-12">
+      <Helmet>
+        <title>Thông tin cá nhân</title>
+      </Helmet>
       <div className="container">
         <div className="row">
           <div className="col-12 text-center">

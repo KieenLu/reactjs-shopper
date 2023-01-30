@@ -1,10 +1,14 @@
 import { PATH } from "@/config/path";
 import React from "react";
+import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 
 const ShippingPage = () => {
   return (
     <div>
+      <Helmet>
+        <title>Quy định giao hàng</title>
+      </Helmet>
       {/* BREADCRUMB */}
       <nav className="py-5">
         <div className="container">

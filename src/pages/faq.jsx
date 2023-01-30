@@ -1,11 +1,15 @@
 import { Accordion } from "@/components/Accordion";
 import { useScrollTop } from "@/hooks/useScrollTop";
 import React from "react";
+import { Helmet } from "react-helmet";
 
 const FaqPage = () => {
   useScrollTop();
   return (
     <div>
+      <Helmet>
+        <title>Giả đáp</title>
+      </Helmet>
       {/* BREADCRUMB */}
       <nav className="py-5">
         <div className="container">

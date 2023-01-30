@@ -3,10 +3,14 @@ import { Slider } from "@/components/Slider";
 import { StyleSlider } from "@/components/Slider/style";
 import { Tab } from "@/components/Tab";
 import React from "react";
+import { Helmet } from "react-helmet";
 
 export const HomePage = () => {
   return (
     <>
+      <Helmet>
+        <title>Trang chủ</title>
+      </Helmet>
       {/* CATEGORIES */}
       <section>
         <div

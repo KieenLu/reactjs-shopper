@@ -11,16 +11,19 @@ import { slugify } from "@/utils/slugify";
 import classNames from "classnames";
 import queryString from "query-string";
 import { useState } from "react";
-import { Link, NavLink, generatePath, useMatch } from "react-router-dom";
+import { Helmet } from "react-helmet";
+import {
+  Link,
+  NavLink,
+  generatePath,
+  useMatch,
+  useSearchParams,
+} from "react-router-dom";
 const ShopPage = () => {
-  // const [search] = useSearchParams();
-  const [categoryId, setCategoryId] = useState("");
-  const [sort, setSort] = useState("");
-  const searchParam = new URLSearchParams();
   const { data: categoriess } = useCategories();
   const match = useMatch(PATH.category);
   const category = useCategory(parseInt(match?.params?.id || "0"));
-
+  const [searchResult] = useSearchParams();
   // if (categoryId) {
   //   searchParam.set("categories", categoryId);
   // }
@@ -29,7 +32,7 @@ const ShopPage = () => {
   // }
   // const _queryString = searchParam.toString();
 
-  // const keyword = search.get("search");
+  const keyword = searchResult.get("search");
   // const categories = search.get("categories");
   // const currentPage = search.get("page") || "1";
 
@@ -56,6 +59,9 @@ const ShopPage = () => {
     });
   return (
     <div>
+      <Helmet>
+        <title>Cửa hàng</title>
+      </Helmet>
       {/* PROMO */}
       <div className="py-3 bg-dark bg-pattern @@classList">
         <div className="container">
@@ -601,9 +607,9 @@ const ShopPage = () => {
                   </select>
                 </div>
               </div>
-              {/* {keyword && (
+              {keyword && (
                 <h4 className="mb-5">Kết quả tìm kiếm cho : {keyword} </h4>
-              )} */}
+              )}
               {/* Products */}
               <div className="row">
                 {loading ? (
