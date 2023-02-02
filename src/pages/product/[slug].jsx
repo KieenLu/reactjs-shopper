@@ -6,14 +6,37 @@ import { useQuery } from "@/hooks/useQuery";
 import { productService } from "@/services/product";
 import { currency } from "@/utils/currency";
 import { useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Page404 from "../404";
+import { useState } from "react";
+import { Image, message } from "antd";
+import { useAuth } from "@/hooks/useAuth";
+import { Popconfirm } from "@/components/Popconfirm";
+import { PATH } from "@/config/path";
+import { updateQuantityAction } from "@/stories/cart";
+import { useCart } from "@/hooks/useCart";
+import { handleError } from "@/utils/handleError";
+import { ListReview } from "@/components/ReviewItem";
+import { reviewService } from "@/services/review";
+import queryString from "query-string";
+import { useSearch } from "@/hooks/useSearch";
+import { Paginate } from "@/components/Paginate";
 
 const ProductDetails = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [openModal, setOpenModal] = useState(false);
+  const [currentImage, setCurrentImage] = useState(0);
+  const [loadingAddToCart, setLoadingAddToCart] = useState(false);
   const { slug } = useParams();
   const id = slug.split("-p").pop();
+  const [search] = useSearch({ page: 1 });
+  const qs = queryString.stringify({
+    page: search.page,
+  });
   const {
-    data: detail = {},
+    data: { data: detail } = {},
     error,
     loading,
   } = useQuery({
@@ -28,12 +51,40 @@ const ProductDetails = () => {
     action: () => productService.addWishList(id),
     messageSuccess: MESSAGE.ADD_WISHLIST_SUCCESS(detail?.name),
   });
+  const {
+    data: { data: reviews = [], paginate: reviewPaginate } = {},
 
-  const dispatch = useDispatch();
+    loading: reviewLoading,
+    refetch: refetchReview,
+  } = useQuery({
+    queryFn: () => reviewService.getReview(id, `?${qs}`),
+    enabled: !!id,
+    limitDuration: 3000,
+  });
   console.log(detail);
-  console.log(category);
+  console.log(reviews);
+
+  const { cart, loading: cartLoading } = useCart();
+  const { [id]: addCartLoading } = cartLoading;
+  const cartQuantity =
+    (cart?.listItems?.find((e) => e.productId === id)?.quantity || 0) + 1;
+  const addToCart = async (ev) => {
+    try {
+      message.loading("Đang thêm sản phẩm vào giỏ hàng");
+      await dispatch(
+        updateQuantityAction({
+          productId: id,
+          quantity: cartQuantity,
+        })
+      );
+      message.success("Thêm sản phẩm vào giỏ hàng thành công");
+    } catch (err) {
+      handleError(err);
+    }
+  };
   if (loading) return <div>...LOADING</div>;
   if (!id || error) return <Page404 />;
+
   return (
     <div>
       {/* BREADCRUMB */}
@@ -69,78 +120,80 @@ const ProductDetails = () => {
                   {/* Card */}
                   <div className="card">
                     {/* Badge */}
-                    <div className="badge badge-primary card-badge text-uppercase">
-                      Sale
-                    </div>
+                    {detail?.discount > 0 ? (
+                      <div className="badge badge-primary card-badge text-uppercase">
+                        Sale
+                      </div>
+                    ) : (
+                      <></>
+                    )}
                     {/* Slider */}
-                    <div
-                      className="mb-4"
-                      data-flickity='{"draggable": false, "fade": true}'
-                      id="productSlider"
-                    >
-                      {/* Item */}
-                      <a href="./img/products/product-7.jpg" data-fancybox>
-                        <img
-                          src="./img/products/product-7.jpg"
-                          alt="..."
-                          className="card-img-top"
-                        />
-                      </a>
-                      {/* Item */}
-                      <a href="./img/products/product-122.jpg" data-fancybox>
-                        <img
-                          src="./img/products/product-122.jpg"
-                          alt="..."
-                          className="card-img-top"
-                        />
-                      </a>
-                      {/* Item */}
-                      <a href="./img/products/product-146.jpg" data-fancybox>
-                        <img
-                          src="./img/products/product-146.jpg"
-                          alt="..."
-                          className="card-img-top"
-                        />
-                      </a>
+                    <div className="mb-4">
+                      <img
+                        onClick={() => setOpenModal(true)}
+                        src={detail?.images?.[0].large_url}
+                        alt="..."
+                        className="card-img-top cursor-pointer"
+                      ></img>
+                    </div>
+
+                    <div style={{ display: "none" }}>
+                      <Image.PreviewGroup
+                        st
+                        preview={{
+                          current: currentImage,
+                          visible: openModal,
+                          onVisibleChange: (vis) => setOpenModal(vis),
+                          wrapStyle: { margin: 100 },
+                        }}
+                      >
+                        {detail?.images?.map((e, i) => (
+                          <Image key={i} src={e.large_url} />
+                        ))}
+                      </Image.PreviewGroup>
                     </div>
                   </div>
                   {/* Slider */}
                   <div
-                    className="flickity-nav mx-n2 mb-10 mb-md-0"
+                    className="flex mx-n2 mb-10 mb-md-0"
                     data-flickity='{"asNavFor": "#productSlider", "contain": true, "wrapAround": false}'
                   >
-                    {/* Item */}
-                    <div className="col-12 px-2" style={{ maxWidth: "113px" }}>
-                      {/* Image */}
+                    {detail?.images?.slice(0, 3)?.map((e, i) => (
                       <div
-                        className="embed-responsive embed-responsive-1by1 bg-cover"
-                        style={{
-                          backgroundImage: "url(./img/products/product-7.jpg)",
-                        }}
-                      />
-                    </div>
-                    {/* Item */}
-                    <div className="col-12 px-2" style={{ maxWidth: "113px" }}>
-                      {/* Image */}
+                        key={i}
+                        className="col-12 px-2"
+                        style={{ maxWidth: "113px" }}
+                      >
+                        <div
+                          onClick={() => {
+                            setCurrentImage(i);
+                            setOpenModal(true);
+                          }}
+                          className="embed-responsive embed-responsive-1by1 bg-cover cursor-pointer"
+                          style={{
+                            "background-image": `url(${e.thumbnail_url})`,
+                          }}
+                        ></div>
+                      </div>
+                    ))}
+
+                    {detail?.images?.length > 3 && (
                       <div
-                        className="embed-responsive embed-responsive-1by1 bg-cover"
-                        style={{
-                          backgroundImage:
-                            "url(./img/products/product-122.jpg)",
-                        }}
-                      />
-                    </div>
-                    {/* Item */}
-                    <div className="col-12 px-2" style={{ maxWidth: "113px" }}>
-                      {/* Image */}
-                      <div
-                        className="embed-responsive embed-responsive-1by1 bg-cover"
-                        style={{
-                          backgroundImage:
-                            "url(./img/products/product-146.jpg)",
-                        }}
-                      />
-                    </div>
+                        className=" col-12 px-2"
+                        style={{ maxWidth: "113px" }}
+                      >
+                        <div
+                          onClick={() => {
+                            setCurrentImage(4);
+                            setOpenModal(true);
+                          }}
+                          className="rounded-sm h-full bg-light flex items-center justify-center cursor-pointer"
+                        >
+                          + {detail?.images.length - 3} <br />
+                          hình
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="col-12 col-md-6 pl-lg-10">
@@ -156,7 +209,7 @@ const ProductDetails = () => {
                       {/* Rating */}
                       <div
                         className="rating font-size-xs text-dark"
-                        data-value={detail.rating_average}
+                        data-value={detail?.rating_average}
                       >
                         <div className="rating-item">
                           <i className="fas fa-star" />
@@ -178,26 +231,26 @@ const ProductDetails = () => {
                         className="font-size-sm text-reset ml-2"
                         href="#reviews"
                       >
-                        {detail.rating_average} star ({detail.review_count}{" "}
+                        {detail?.rating_average} star ({detail?.review_count}
                         Reviews)
                       </a>
                     </div>
                   </div>
                   {/* Heading */}
-                  <h3 className="mb-2">{detail.name}</h3>
+                  <h3 className="mb-2">{detail?.name}</h3>
                   {/* Price */}
                   <div className="mb-7">
-                    {detail.real_price === detail.price ? (
+                    {detail?.real_price === detail?.price ? (
                       <span className="ml-1 font-size-h5 font-weight-bolder text-primary">
-                        {detail.real_price} VNĐ
+                        {detail?.real_price} VNĐ
                       </span>
                     ) : (
                       <>
                         <span className="font-size-lg font-weight-bold text-gray-350 text-decoration-line-through">
-                          {currency(detail.price)} VNĐ
+                          {currency(detail?.price)} VNĐ
                         </span>
                         <span className="ml-1 font-size-h5 font-weight-bolder text-primary">
-                          {currency(detail.real_price)} VNĐ
+                          {currency(detail?.real_price)} VNĐ
                         </span>
                       </>
                     )}
@@ -209,11 +262,10 @@ const ProductDetails = () => {
                     )}
                   </div>
                   {/* Form */}
-                  <p className="mb-10">{detail.short_description}</p>
+                  <p className="mb-10">{detail?.short_description}</p>
                   <div className="form-group">
                     <div className="form-row mb-7">
-                      <div className="col-12 col-lg-auto">
-                        {/* Quantity */}
+                      {/* <div className="col-12 col-lg-auto">
                         <select class="custom-select mb-2">
                           <option value="1" selected>
                             1
@@ -223,22 +275,87 @@ const ProductDetails = () => {
                           <option value="4">4</option>
                           <option value="5">5</option>
                         </select>
-                      </div>
+                      </div> */}
                       <div className="col-12 col-lg-auto">
                         {/* Submit */}
-                        <button
-                          type="submit"
-                          className="btn btn-block btn-dark mb-2"
+                        {/* Wishlist */}
+                        <Popconfirm
+                          disabled={user}
+                          title="Thông báo"
+                          description={
+                            <>
+                              <p>
+                                Bạn cần đăng nhập trước khi sử dụng chức năng
+                                này
+                              </p>
+                              <div className="flex ">
+                                <Button
+                                  onClick={() =>
+                                    navigate(PATH.account, {
+                                      state: {
+                                        redirect:
+                                          window.location.pathname +
+                                          window.location.search,
+                                      },
+                                    })
+                                  }
+                                >
+                                  Đăng nhập
+                                </Button>
+                              </div>
+                            </>
+                          }
+                          showCancel={false}
+                          okButtonProps={{ hidden: true }}
                         >
-                          Add to Cart{" "}
-                          <i className="fe fe-shopping-cart ml-2"></i>
-                        </button>
+                          <Button
+                            loading={addCartLoading}
+                            onClick={() => user && addToCart()}
+                            className="mb-2"
+                          >
+                            Add to Cart
+                            <i className="fe fe-shopping-cart ml-2"></i>
+                          </Button>
+                        </Popconfirm>
                       </div>
                       <div className="col-12 col-lg-auto">
                         {/* Wishlist */}
-                        <Button className="mb-2" onClick={onAddWishList}>
-                          Wishlist <i className="fe fe-heart ml-2" />
-                        </Button>
+                        <Popconfirm
+                          disabled={user}
+                          title="Thông báo"
+                          description={
+                            <>
+                              <p>
+                                Bạn cần đăng nhập trước khi sử dụng chức năng
+                                này
+                              </p>
+                              <div className="flex ">
+                                <Button
+                                  onClick={() =>
+                                    navigate(PATH.account, {
+                                      state: {
+                                        redirect:
+                                          window.location.pathname +
+                                          window.location.search,
+                                      },
+                                    })
+                                  }
+                                >
+                                  Đăng nhập
+                                </Button>
+                              </div>
+                            </>
+                          }
+                          showCancel={false}
+                          okButtonProps={{ hidden: true }}
+                        >
+                          <Button
+                            className="mb-2"
+                            onClick={() => user && onAddWishList()}
+                          >
+                            Wishlist <i className="fe fe-heart ml-2" />
+                          </Button>
+                        </Popconfirm>
                       </div>
                     </div>
                     {/* Text */}
@@ -302,7 +419,7 @@ const ProductDetails = () => {
                       <div className="row">
                         <div className="col-12">
                           {/* Text */}
-                          <ShortedContent>{detail.description}</ShortedContent>
+                          <ShortedContent>{detail?.description}</ShortedContent>
                         </div>
                       </div>
                     </div>
@@ -321,11 +438,11 @@ const ProductDetails = () => {
               {/* Heading */}
               <h4 className="mb-10 text-center">Customer Reviews</h4>
               {/* Header */}
+
               <div className="row align-items-center">
                 <div className="col-12 col-md-auto">
                   {/* Dropdown */}
-                  <div className="dropdown mb-4 mb-md-0">
-                    {/* Toggle */}
+                  {/* <div className="dropdown mb-4 mb-md-0">
                     <a
                       className="dropdown-toggle text-reset"
                       data-toggle="dropdown"
@@ -333,7 +450,6 @@ const ProductDetails = () => {
                     >
                       <strong>Sort by: Newest</strong>
                     </a>
-                    {/* Menu */}
                     <div className="dropdown-menu mt-3">
                       <a className="dropdown-item" href="#!">
                         Newest
@@ -342,13 +458,13 @@ const ProductDetails = () => {
                         Oldest
                       </a>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
                 <div className="col-12 col-md text-md-center">
                   {/* Rating */}
                   <div
                     className="rating text-dark h6 mb-4 mb-md-0"
-                    data-value={4}
+                    data-value={detail?.rating_average}
                   >
                     <div className="rating-item">
                       <i className="fas fa-star" />
@@ -367,10 +483,11 @@ const ProductDetails = () => {
                     </div>
                   </div>
                   {/* Count */}
-                  <strong className="font-size-sm ml-2">Reviews (3)</strong>
+                  <strong className="font-size-sm ml-2">
+                    Reviews ({detail?.review_count})
+                  </strong>
                 </div>
-                <div className="col-12 col-md-auto">
-                  {/* Button */}
+                {/* <div className="col-12 col-md-auto">
                   <a
                     className="btn btn-sm btn-dark"
                     data-toggle="collapse"
@@ -378,21 +495,18 @@ const ProductDetails = () => {
                   >
                     Write Review
                   </a>
-                </div>
+                </div> */}
               </div>
               {/* New Review */}
-              <div className="collapse" id="reviewForm">
+              <div className="" id="reviewForm">
                 {/* Divider */}
                 <hr className="my-8" />
                 {/* Form */}
-                <form>
+                {/* <form>
                   <div className="row">
                     <div className="col-12 mb-6 text-center">
-                      {/* Text */}
                       <p className="mb-1 font-size-xs">Score:</p>
-                      {/* Rating form */}
                       <div className="rating-form">
-                        {/* Input */}
                         <input
                           className="rating-input"
                           type="range"
@@ -400,7 +514,6 @@ const ProductDetails = () => {
                           max={5}
                           defaultValue={5}
                         />
-                        {/* Rating */}
                         <div className="rating h5 text-dark" data-value={5}>
                           <div className="rating-item">
                             <i className="fas fa-star" />
@@ -421,7 +534,6 @@ const ProductDetails = () => {
                       </div>
                     </div>
                     <div className="col-12 col-md-6">
-                      {/* Name */}
                       <div className="form-group">
                         <label className="sr-only" htmlFor="reviewName">
                           Your Name:
@@ -436,7 +548,6 @@ const ProductDetails = () => {
                       </div>
                     </div>
                     <div className="col-12 col-md-6">
-                      {/* Email */}
                       <div className="form-group">
                         <label className="sr-only" htmlFor="reviewEmail">
                           Your Email:
@@ -451,7 +562,6 @@ const ProductDetails = () => {
                       </div>
                     </div>
                     <div className="col-12">
-                      {/* Name */}
                       <div className="form-group">
                         <label className="sr-only" htmlFor="reviewTitle">
                           Review Title:
@@ -466,7 +576,6 @@ const ProductDetails = () => {
                       </div>
                     </div>
                     <div className="col-12">
-                      {/* Name */}
                       <div className="form-group">
                         <label className="sr-only" htmlFor="reviewText">
                           Review:
@@ -482,13 +591,12 @@ const ProductDetails = () => {
                       </div>
                     </div>
                     <div className="col-12 text-center">
-                      {/* Button */}
                       <button className="btn btn-outline-dark" type="submit">
                         Post Review
                       </button>
                     </div>
                   </div>
-                </form>
+                </form> */}
               </div>
               {/* Reviews */}
               <div className="mt-8">
@@ -496,172 +604,27 @@ const ProductDetails = () => {
                 <div className="review">
                   <div className="review-body">
                     <div className="row">
-                      <div className="col-12 col-md-auto">
-                        {/* Avatar */}
-                        <div className="avatar avatar-xxl mb-6 mb-md-0">
-                          <span className="avatar-title rounded-circle">
-                            <i className="fa fa-user" />
-                          </span>
-                        </div>
-                      </div>
-                      <div className="col-12 col-md">
-                        {/* Header */}
-                        <div className="row mb-6">
-                          <div className="col-12">
-                            {/* Rating */}
-                            <div
-                              className="rating font-size-sm text-dark"
-                              data-value={5}
-                            >
-                              <div className="rating-item">
-                                <i className="fas fa-star" />
-                              </div>
-                              <div className="rating-item">
-                                <i className="fas fa-star" />
-                              </div>
-                              <div className="rating-item">
-                                <i className="fas fa-star" />
-                              </div>
-                              <div className="rating-item">
-                                <i className="fas fa-star" />
-                              </div>
-                              <div className="rating-item">
-                                <i className="fas fa-star" />
-                              </div>
-                            </div>
+                      <ListReview
+                        loadingCount={5}
+                        loading={reviewLoading}
+                        data={reviews}
+                        empty={
+                          <div className="col-12 mt-5">
+                            <p className="text-xl border p-5 text-center mb-5">
+                              Sản phẩm hiện chưa có đánh giá nào, hãy giúp chúng
+                              tôi mua hàng và đánh giá cho người khác biết
+                            </p>
                           </div>
-                          <div className="col-12">
-                            {/* Time */}
-                            <span className="font-size-xs text-muted">
-                              Logan Edwards,{" "}
-                              <time dateTime="2019-07-25">25 Jul 2019</time>
-                            </span>
-                          </div>
-                        </div>
-                        {/* Title */}
-                        <p className="mb-2 font-size-lg font-weight-bold">
-                          So cute!
-                        </p>
-                        {/* Text */}
-                        <p className="text-gray-500">
-                          Justo ut diam erat hendrerit. Morbi porttitor, per eu.
-                          Sodales curabitur diam sociis. Taciti lobortis
-                          nascetur. Ante laoreet odio hendrerit. Dictumst
-                          curabitur nascetur lectus potenti dis sollicitudin
-                          habitant quis vestibulum.
-                        </p>
-                      </div>
+                        }
+                      />
                     </div>
                   </div>
                 </div>
                 {/* Review */}
-                <div className="review">
-                  {/* Body */}
-                  <div className="review-body">
-                    <div className="row">
-                      <div className="col-12 col-md-auto">
-                        {/* Avatar */}
-                        <div className="avatar avatar-xxl mb-6 mb-md-0">
-                          <span className="avatar-title rounded-circle">
-                            <i className="fa fa-user" />
-                          </span>
-                        </div>
-                      </div>
-                      <div className="col-12 col-md">
-                        {/* Header */}
-                        <div className="row mb-6">
-                          <div className="col-12">
-                            {/* Rating */}
-                            <div
-                              className="rating font-size-sm text-dark"
-                              data-value={3}
-                            >
-                              <div className="rating-item">
-                                <i className="fas fa-star" />
-                              </div>
-                              <div className="rating-item">
-                                <i className="fas fa-star" />
-                              </div>
-                              <div className="rating-item">
-                                <i className="fas fa-star" />
-                              </div>
-                              <div className="rating-item">
-                                <i className="fas fa-star" />
-                              </div>
-                              <div className="rating-item">
-                                <i className="fas fa-star" />
-                              </div>
-                            </div>
-                          </div>
-                          <div className="col-12">
-                            {/* Time */}
-                            <span className="font-size-xs text-muted">
-                              Sophie Casey,{" "}
-                              <time dateTime="2019-07-07">07 Jul 2019</time>
-                            </span>
-                          </div>
-                        </div>
-                        {/* Title */}
-                        <p className="mb-2 font-size-lg font-weight-bold">
-                          Cute, but too small
-                        </p>
-                        {/* Text */}
-                        <p className="text-gray-500">
-                          Shall good midst can't. Have fill own his multiply the
-                          divided. Thing great. Of heaven whose signs.
-                        </p>
-                        {/* Footer */}
-                        <div className="row align-items-center">
-                          <div className="col-auto d-none d-lg-block">
-                            {/* Text */}
-                            <p className="mb-0 font-size-sm">
-                              Was this review helpful?
-                            </p>
-                          </div>
-                          <div className="col-auto mr-auto">
-                            {/* Rate */}
-                            <div className="rate">
-                              <a
-                                className="rate-item"
-                                data-toggle="vote"
-                                data-count={2}
-                                href="#"
-                                role="button"
-                              >
-                                <i className="fe fe-thumbs-up" />
-                              </a>
-                              <a
-                                className="rate-item"
-                                data-toggle="vote"
-                                data-count={1}
-                                href="#"
-                                role="button"
-                              >
-                                <i className="fe fe-thumbs-down" />
-                              </a>
-                            </div>
-                          </div>
-                          <div className="col-auto d-none d-lg-block">
-                            {/* Text */}
-                            <p className="mb-0 font-size-sm">Comments (1)</p>
-                          </div>
-                          <div className="col-auto">
-                            {/* Button */}
-                            <a
-                              className="btn btn-xs btn-outline-border"
-                              href="#!"
-                            >
-                              Comment
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
               </div>
+              <Paginate totalPage={reviewPaginate?.totalPage} />
               {/* Pagination */}
-              <nav className="d-flex justify-content-center mt-9">
+              {/* <nav className="d-flex justify-content-center mt-9">
                 <ul className="pagination pagination-sm text-gray-400">
                   <li className="page-item">
                     <a className="page-link page-link-arrow" href="#">
@@ -689,7 +652,7 @@ const ProductDetails = () => {
                     </a>
                   </li>
                 </ul>
-              </nav>
+              </nav> */}
             </div>
           </div>
         </div>

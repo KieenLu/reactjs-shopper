@@ -1,6 +1,5 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { authReducer, getUserThunkAction } from "./auth";
-import { ENV } from "@/config";
 import { cartReducer, getCartThunkAction } from "./cart";
 
 const reducers = combineReducers({

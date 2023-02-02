@@ -8,12 +8,20 @@ import { avatarDefault } from "@/config/asssets";
 import { useAuth } from "@/hooks/useAuth";
 import { Dropdown } from "antd";
 import { logoutThunkAction } from "@/stories/auth";
+import { useTranslate } from "../TranslateProvider";
+import _ from "lodash";
 
 const Header = () => {
+  const LANG = {
+    en: "English",
+    vi: "Tiếng Việt",
+    cn: "China",
+  };
   const dispatch = useDispatch();
   const { user } = useAuth();
   const { cart } = useSelector((store) => store.cart);
   const [openSearchDrawer, setOpenSearchDrawer] = useState(false);
+  const { t, setLang, lang } = useTranslate();
   const onOpenSearchDrawer = (ev) => {
     ev.preventDefault();
     setOpenSearchDrawer(true);
@@ -22,17 +30,18 @@ const Header = () => {
     return [
       {
         key: 1,
-        label: <Link to={PATH.profile.index}>Tài khoản của tôi</Link>,
+        label: <Link to={PATH.profile.index}>Account</Link>,
       },
       {
         key: 3,
-        label: <Link to={PATH.profile.order}>Đơn hàng</Link>,
+        label: <Link to={PATH.profile.order}>Order</Link>,
       },
       {
         key: 2,
-        label: "Đăng xuất",
+        label: "Logout",
         onClick: () => {
           dispatch(logoutThunkAction());
+          dispatch(cartActions.clearCart());
         },
       },
     ];
@@ -52,8 +61,8 @@ const Header = () => {
         <div className="container">
           {/* Promo */}
           <div className="mr-xl-8">
-            <i className="fe fe-truck mr-2" />{" "}
-            <span className="heading-xxxs">Vận chuyển toàn cầu</span>
+            <i className="fe fe-truck mr-2" />
+            <span className="heading-xxxs">{t("shipping")}</span>
           </div>
           {/* Toggler */}
           <button
@@ -132,44 +141,53 @@ const Header = () => {
                   </a>
                 </div>
               </li>
-              <li className="nav-item dropdown">
-                {/* Toggle */}
-                <a
-                  className="nav-link dropdown-toggle"
-                  data-toggle="dropdown"
-                  href="#"
+              <li className="nav-item">
+                <Dropdown
+                  arrow
+                  placement="topRight"
+                  menu={{
+                    items: _.map(LANG, (title, code) => ({
+                      key: code,
+                      label: title,
+                      onClick: () => setLang(code),
+                    })),
+                    // [
+                    //     {
+                    //         label: 'English',
+                    //         onClick: () => setLang('en')
+                    //     },
+                    //     {
+                    //         label: 'Tiếng Việt',
+                    //         onClick: () => setLang('vi')
+                    //     },
+                    //     {
+                    //         label: 'China',
+                    //         onClick: () => setLang('zh')
+                    //     },
+                    // ]
+                  }}
                 >
-                  English
-                </a>
-                {/* Menu */}
-                <div className="dropdown-menu minw-0">
-                  <a className="dropdown-item" href="#">
-                    English
+                  <a className="nav-link dropdown-toggle" href="#">
+                    {LANG[lang]}
                   </a>
-                  <a className="dropdown-item" href="#">
-                    Tiếng Việt
-                  </a>
-                  <a className="dropdown-item" href="#">
-                    China
-                  </a>
-                </div>
+                </Dropdown>
               </li>
             </ul>
             {/* Nav */}
             <ul className="nav navbar-nav mr-8">
               <li className="nav-item">
                 <Link className="nav-link" to={PATH.shiping}>
-                  Quy định giao hàng
+                  {t("delivery")}
                 </Link>
               </li>
               <li className="nav-item">
                 <Link className="nav-link" to={PATH.faq}>
-                  Câu hỏi
+                  {t("question")}
                 </Link>
               </li>
               <li className="nav-item">
                 <Link className="nav-link" to={PATH.contact}>
-                  Liên hệ
+                  {t("contact")}
                 </Link>
               </li>
             </ul>
@@ -228,28 +246,31 @@ const Header = () => {
             <ul className="navbar-nav mx-auto">
               <li className="nav-item">
                 <NavLink className="nav-link" to={PATH.home}>
-                  Trang chủ
+                  {t("home")}
                 </NavLink>
               </li>
               <li className="nav-item">
                 <NavLink className="nav-link" to={PATH.shop}>
-                  Sản phẩm
+                  {t("product")}
                 </NavLink>
               </li>
               <li className="nav-item dropdown">
-                <a className="nav-link" href="./shop.html">
-                  Laptop
-                </a>
+                <Link className="nav-link" to={"/cua-hang?search=laptop"}>
+                  {t("Laptop")}
+                </Link>
               </li>
               <li className="nav-item dropdown">
-                <a className="nav-link" href="./shop.html">
-                  Máy tính
-                </a>
+                <Link className="nav-link" to={"/cua-hang?search=máy%20tính"}>
+                  {t("computer")}
+                </Link>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="./shop.html">
-                  Sản phẩm khuyến mãi
-                </a>
+                <Link
+                  className="nav-link"
+                  to={"/cua-hang?page=1&sort=discount_rate.desc"}
+                >
+                  {t("product.promotional")}
+                </Link>
               </li>
             </ul>
             {/* Nav */}
@@ -308,7 +329,7 @@ const Header = () => {
                   href="#"
                   onClick={onOpenCart}
                 >
-                  <span data-cart-items={2}>
+                  <span data-cart-items={cart?.totalQuantity}>
                     <i className="fe fe-shopping-cart" />
                   </span>
                 </a>

@@ -1,6 +1,9 @@
 import { Paginate } from "@/components/Paginate";
 import ProductCard from "@/components/ProductCard";
 import { ProductCardLoading } from "@/components/ProductCardLoading";
+import Promotion from "@/components/Promotion";
+import { Radio } from "@/components/Radio";
+import { useTranslate } from "@/components/TranslateProvider";
 import { PATH } from "@/config/path";
 import { useCategories, useCategory } from "@/hooks/useCategories";
 import { useQuery } from "@/hooks/useQuery";
@@ -20,21 +23,13 @@ import {
   useSearchParams,
 } from "react-router-dom";
 const ShopPage = () => {
+  const { t } = useTranslate();
   const { data: categoriess } = useCategories();
   const match = useMatch(PATH.category);
   const category = useCategory(parseInt(match?.params?.id || "0"));
   const [searchResult] = useSearchParams();
-  // if (categoryId) {
-  //   searchParam.set("categories", categoryId);
-  // }
-  // if (sort) {
-  //   searchParam.set("sort", sort);
-  // }
-  // const _queryString = searchParam.toString();
 
   const keyword = searchResult.get("search");
-  // const categories = search.get("categories");
-  // const currentPage = search.get("page") || "1";
 
   const [search, setSearch] = useSearch({
     page: 1,
@@ -49,6 +44,7 @@ const ShopPage = () => {
     minPrice: search.minPrice || undefined,
     maxPrice: search.maxPrice || undefined,
     sort: search.sort,
+    rating_average: search.rating_average || undefined,
   });
   const { data: { data: products = [], paginate = {} } = {}, loading } =
     useQuery({
@@ -57,26 +53,21 @@ const ShopPage = () => {
       keepPreviousData: true,
       queryKey: [query, search.page],
     });
+  const onChangeFilterRating = (ev, reason) => {
+    if (reason === "uncheckedWhen2nd") {
+      setSearch({ rating_average: undefined });
+    } else {
+      setSearch({
+        rating_average: ev.target.value,
+      });
+    }
+  };
   return (
     <div>
       <Helmet>
         <title>Cửa hàng</title>
       </Helmet>
-      {/* PROMO */}
-      <div className="py-3 bg-dark bg-pattern @@classList">
-        <div className="container">
-          <div className="row">
-            <div className="col-12">
-              {/* Text */}
-              <div className="text-center text-white">
-                <span className="heading-xxs letter-spacing-xl">
-                  ⚡️ Săn deal hot cho ngày lễ 2/9 ⚡️
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <Promotion />
       {/* CONTENT */}
       <section className="py-11">
         <div className="container">
@@ -140,287 +131,269 @@ const ShopPage = () => {
                     </a>
                     {/* Collapse */}
                     <div>
-                      <div
-                        className="form-group form-group-overflow mb-6"
-                        id="seasonGroup"
+                      <Radio.Group
+                        value={search.rating_average}
+                        onChange={onChangeFilterRating}
+                        uncheckedWhen2nd
                       >
-                        <div className="custom-control custom-radio mb-3">
-                          <label
-                            className="custom-control-label flex items-center"
-                            htmlFor="seasonOne"
-                          >
-                            <input
-                              className="custom-control-input"
-                              type="radio"
-                              defaultChecked
-                            />
-                            <svg
-                              stroke="currentColor"
-                              fill="currentColor"
-                              strokeWidth={0}
-                              viewBox="0 0 24 24"
-                              size={14}
-                              color="#fdd836"
-                              height={14}
-                              width={14}
-                              xmlns="http://www.w3.org/2000/svg"
-                              style={{ color: "rgb(253, 216, 54)" }}
-                            >
-                              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                            </svg>
-                            <svg
-                              stroke="currentColor"
-                              fill="currentColor"
-                              strokeWidth={0}
-                              viewBox="0 0 24 24"
-                              size={14}
-                              color="#fdd836"
-                              height={14}
-                              width={14}
-                              xmlns="http://www.w3.org/2000/svg"
-                              style={{ color: "rgb(253, 216, 54)" }}
-                            >
-                              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                            </svg>
-                            <svg
-                              stroke="currentColor"
-                              fill="currentColor"
-                              strokeWidth={0}
-                              viewBox="0 0 24 24"
-                              size={14}
-                              color="#fdd836"
-                              height={14}
-                              width={14}
-                              xmlns="http://www.w3.org/2000/svg"
-                              style={{ color: "rgb(253, 216, 54)" }}
-                            >
-                              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                            </svg>
-                            <svg
-                              stroke="currentColor"
-                              fill="currentColor"
-                              strokeWidth={0}
-                              viewBox="0 0 24 24"
-                              size={14}
-                              color="#fdd836"
-                              height={14}
-                              width={14}
-                              xmlns="http://www.w3.org/2000/svg"
-                              style={{ color: "rgb(253, 216, 54)" }}
-                            >
-                              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                            </svg>
-                            <svg
-                              stroke="currentColor"
-                              fill="currentColor"
-                              strokeWidth={0}
-                              viewBox="0 0 24 24"
-                              size={14}
-                              color="#fdd836"
-                              height={14}
-                              width={14}
-                              xmlns="http://www.w3.org/2000/svg"
-                              style={{ color: "rgb(253, 216, 54)" }}
-                            >
-                              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                            </svg>
-                            <span className="text-small inline-block ml-2">
-                              from 5 star
-                            </span>
-                          </label>
+                        <div
+                          className="form-group form-group-overflow mb-6"
+                          id="seasonGroup"
+                        >
+                          <div className="custom-control custom-radio mb-3">
+                            <Radio value="5">
+                              <svg
+                                stroke="currentColor"
+                                fill="currentColor"
+                                strokeWidth={0}
+                                viewBox="0 0 24 24"
+                                size={14}
+                                color="#fdd836"
+                                height={14}
+                                width={14}
+                                xmlns="http://www.w3.org/2000/svg"
+                                style={{ color: "rgb(253, 216, 54)" }}
+                              >
+                                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                              </svg>
+                              <svg
+                                stroke="currentColor"
+                                fill="currentColor"
+                                strokeWidth={0}
+                                viewBox="0 0 24 24"
+                                size={14}
+                                color="#fdd836"
+                                height={14}
+                                width={14}
+                                xmlns="http://www.w3.org/2000/svg"
+                                style={{ color: "rgb(253, 216, 54)" }}
+                              >
+                                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                              </svg>
+                              <svg
+                                stroke="currentColor"
+                                fill="currentColor"
+                                strokeWidth={0}
+                                viewBox="0 0 24 24"
+                                size={14}
+                                color="#fdd836"
+                                height={14}
+                                width={14}
+                                xmlns="http://www.w3.org/2000/svg"
+                                style={{ color: "rgb(253, 216, 54)" }}
+                              >
+                                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                              </svg>
+                              <svg
+                                stroke="currentColor"
+                                fill="currentColor"
+                                strokeWidth={0}
+                                viewBox="0 0 24 24"
+                                size={14}
+                                color="#fdd836"
+                                height={14}
+                                width={14}
+                                xmlns="http://www.w3.org/2000/svg"
+                                style={{ color: "rgb(253, 216, 54)" }}
+                              >
+                                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                              </svg>
+                              <svg
+                                stroke="currentColor"
+                                fill="currentColor"
+                                strokeWidth={0}
+                                viewBox="0 0 24 24"
+                                size={14}
+                                color="#fdd836"
+                                height={14}
+                                width={14}
+                                xmlns="http://www.w3.org/2000/svg"
+                                style={{ color: "rgb(253, 216, 54)" }}
+                              >
+                                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                              </svg>
+                              <span className="text-small inline-block ml-2">
+                                from 5 star
+                              </span>
+                            </Radio>
+                          </div>
+                          <div className="custom-control custom-radio mb-3">
+                            <Radio value="4">
+                              <svg
+                                stroke="currentColor"
+                                fill="currentColor"
+                                strokeWidth={0}
+                                viewBox="0 0 24 24"
+                                size={14}
+                                color="#fdd836"
+                                height={14}
+                                width={14}
+                                xmlns="http://www.w3.org/2000/svg"
+                                style={{ color: "rgb(253, 216, 54)" }}
+                              >
+                                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                              </svg>
+                              <svg
+                                stroke="currentColor"
+                                fill="currentColor"
+                                strokeWidth={0}
+                                viewBox="0 0 24 24"
+                                size={14}
+                                color="#fdd836"
+                                height={14}
+                                width={14}
+                                xmlns="http://www.w3.org/2000/svg"
+                                style={{ color: "rgb(253, 216, 54)" }}
+                              >
+                                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                              </svg>
+                              <svg
+                                stroke="currentColor"
+                                fill="currentColor"
+                                strokeWidth={0}
+                                viewBox="0 0 24 24"
+                                size={14}
+                                color="#fdd836"
+                                height={14}
+                                width={14}
+                                xmlns="http://www.w3.org/2000/svg"
+                                style={{ color: "rgb(253, 216, 54)" }}
+                              >
+                                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                              </svg>
+                              <svg
+                                stroke="currentColor"
+                                fill="currentColor"
+                                strokeWidth={0}
+                                viewBox="0 0 24 24"
+                                size={14}
+                                color="#fdd836"
+                                height={14}
+                                width={14}
+                                xmlns="http://www.w3.org/2000/svg"
+                                style={{ color: "rgb(253, 216, 54)" }}
+                              >
+                                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                              </svg>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                xmlnsXlink="http://www.w3.org/1999/xlink"
+                                width={14}
+                                height={14}
+                                viewBox="0 0 12 12"
+                                className="star-icon"
+                              >
+                                <g fill="none" fillRule="evenodd">
+                                  <path
+                                    fill="#b8b8b8"
+                                    transform="matrix(-1 0 0 1 11 1)"
+                                    d="M5 0v8.476L1.91 10l.424-3.562L0 3.821l3.353-.678L5 0z"
+                                  />
+                                  <path
+                                    fill="#b8b8b8"
+                                    transform="translate(1 1)"
+                                    d="M5 0v8.476L1.91 10l.424-3.562L0 3.821l3.353-.678L5 0z"
+                                  />
+                                </g>
+                              </svg>
+                              <span className="text-small inline-block ml-2">
+                                from 4 star
+                              </span>
+                            </Radio>
+                          </div>
+                          <div className="custom-control custom-radio">
+                            <Radio value="3">
+                              <svg
+                                stroke="currentColor"
+                                fill="currentColor"
+                                strokeWidth={0}
+                                viewBox="0 0 24 24"
+                                size={14}
+                                color="#fdd836"
+                                height={14}
+                                width={14}
+                                xmlns="http://www.w3.org/2000/svg"
+                                style={{ color: "rgb(253, 216, 54)" }}
+                              >
+                                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                              </svg>
+                              <svg
+                                stroke="currentColor"
+                                fill="currentColor"
+                                strokeWidth={0}
+                                viewBox="0 0 24 24"
+                                size={14}
+                                color="#fdd836"
+                                height={14}
+                                width={14}
+                                xmlns="http://www.w3.org/2000/svg"
+                                style={{ color: "rgb(253, 216, 54)" }}
+                              >
+                                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                              </svg>
+                              <svg
+                                stroke="currentColor"
+                                fill="currentColor"
+                                strokeWidth={0}
+                                viewBox="0 0 24 24"
+                                size={14}
+                                color="#fdd836"
+                                height={14}
+                                width={14}
+                                xmlns="http://www.w3.org/2000/svg"
+                                style={{ color: "rgb(253, 216, 54)" }}
+                              >
+                                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                              </svg>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                xmlnsXlink="http://www.w3.org/1999/xlink"
+                                width={14}
+                                height={14}
+                                viewBox="0 0 12 12"
+                                className="star-icon"
+                              >
+                                <g fill="none" fillRule="evenodd">
+                                  <path
+                                    fill="#b8b8b8"
+                                    transform="matrix(-1 0 0 1 11 1)"
+                                    d="M5 0v8.476L1.91 10l.424-3.562L0 3.821l3.353-.678L5 0z"
+                                  />
+                                  <path
+                                    fill="#b8b8b8"
+                                    transform="translate(1 1)"
+                                    d="M5 0v8.476L1.91 10l.424-3.562L0 3.821l3.353-.678L5 0z"
+                                  />
+                                </g>
+                              </svg>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                xmlnsXlink="http://www.w3.org/1999/xlink"
+                                width={14}
+                                height={14}
+                                viewBox="0 0 12 12"
+                                className="star-icon"
+                              >
+                                <g fill="none" fillRule="evenodd">
+                                  <path
+                                    fill="#b8b8b8"
+                                    transform="matrix(-1 0 0 1 11 1)"
+                                    d="M5 0v8.476L1.91 10l.424-3.562L0 3.821l3.353-.678L5 0z"
+                                  />
+                                  <path
+                                    fill="#b8b8b8"
+                                    transform="translate(1 1)"
+                                    d="M5 0v8.476L1.91 10l.424-3.562L0 3.821l3.353-.678L5 0z"
+                                  />
+                                </g>
+                              </svg>
+                              <span className="text-small inline-block ml-2">
+                                from 3 star
+                              </span>
+                            </Radio>
+                          </div>
                         </div>
-                        <div className="custom-control custom-radio mb-3">
-                          <input
-                            className="custom-control-input"
-                            id="seasonTwo"
-                            type="radio"
-                          />
-                          <label
-                            className="custom-control-label flex items-center"
-                            htmlFor="seasonOne"
-                          >
-                            <svg
-                              stroke="currentColor"
-                              fill="currentColor"
-                              strokeWidth={0}
-                              viewBox="0 0 24 24"
-                              size={14}
-                              color="#fdd836"
-                              height={14}
-                              width={14}
-                              xmlns="http://www.w3.org/2000/svg"
-                              style={{ color: "rgb(253, 216, 54)" }}
-                            >
-                              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                            </svg>
-                            <svg
-                              stroke="currentColor"
-                              fill="currentColor"
-                              strokeWidth={0}
-                              viewBox="0 0 24 24"
-                              size={14}
-                              color="#fdd836"
-                              height={14}
-                              width={14}
-                              xmlns="http://www.w3.org/2000/svg"
-                              style={{ color: "rgb(253, 216, 54)" }}
-                            >
-                              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                            </svg>
-                            <svg
-                              stroke="currentColor"
-                              fill="currentColor"
-                              strokeWidth={0}
-                              viewBox="0 0 24 24"
-                              size={14}
-                              color="#fdd836"
-                              height={14}
-                              width={14}
-                              xmlns="http://www.w3.org/2000/svg"
-                              style={{ color: "rgb(253, 216, 54)" }}
-                            >
-                              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                            </svg>
-                            <svg
-                              stroke="currentColor"
-                              fill="currentColor"
-                              strokeWidth={0}
-                              viewBox="0 0 24 24"
-                              size={14}
-                              color="#fdd836"
-                              height={14}
-                              width={14}
-                              xmlns="http://www.w3.org/2000/svg"
-                              style={{ color: "rgb(253, 216, 54)" }}
-                            >
-                              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                            </svg>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              xmlnsXlink="http://www.w3.org/1999/xlink"
-                              width={14}
-                              height={14}
-                              viewBox="0 0 12 12"
-                              className="star-icon"
-                            >
-                              <g fill="none" fillRule="evenodd">
-                                <path
-                                  fill="#b8b8b8"
-                                  transform="matrix(-1 0 0 1 11 1)"
-                                  d="M5 0v8.476L1.91 10l.424-3.562L0 3.821l3.353-.678L5 0z"
-                                />
-                                <path
-                                  fill="#b8b8b8"
-                                  transform="translate(1 1)"
-                                  d="M5 0v8.476L1.91 10l.424-3.562L0 3.821l3.353-.678L5 0z"
-                                />
-                              </g>
-                            </svg>
-                            <span className="text-small inline-block ml-2">
-                              from 4 star
-                            </span>
-                          </label>
-                        </div>
-                        <div className="custom-control custom-radio">
-                          <input
-                            className="custom-control-input"
-                            id="seasonThree"
-                            type="radio"
-                          />
-                          <label
-                            className="custom-control-label flex items-center"
-                            htmlFor="seasonOne"
-                          >
-                            <svg
-                              stroke="currentColor"
-                              fill="currentColor"
-                              strokeWidth={0}
-                              viewBox="0 0 24 24"
-                              size={14}
-                              color="#fdd836"
-                              height={14}
-                              width={14}
-                              xmlns="http://www.w3.org/2000/svg"
-                              style={{ color: "rgb(253, 216, 54)" }}
-                            >
-                              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                            </svg>
-                            <svg
-                              stroke="currentColor"
-                              fill="currentColor"
-                              strokeWidth={0}
-                              viewBox="0 0 24 24"
-                              size={14}
-                              color="#fdd836"
-                              height={14}
-                              width={14}
-                              xmlns="http://www.w3.org/2000/svg"
-                              style={{ color: "rgb(253, 216, 54)" }}
-                            >
-                              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                            </svg>
-                            <svg
-                              stroke="currentColor"
-                              fill="currentColor"
-                              strokeWidth={0}
-                              viewBox="0 0 24 24"
-                              size={14}
-                              color="#fdd836"
-                              height={14}
-                              width={14}
-                              xmlns="http://www.w3.org/2000/svg"
-                              style={{ color: "rgb(253, 216, 54)" }}
-                            >
-                              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                            </svg>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              xmlnsXlink="http://www.w3.org/1999/xlink"
-                              width={14}
-                              height={14}
-                              viewBox="0 0 12 12"
-                              className="star-icon"
-                            >
-                              <g fill="none" fillRule="evenodd">
-                                <path
-                                  fill="#b8b8b8"
-                                  transform="matrix(-1 0 0 1 11 1)"
-                                  d="M5 0v8.476L1.91 10l.424-3.562L0 3.821l3.353-.678L5 0z"
-                                />
-                                <path
-                                  fill="#b8b8b8"
-                                  transform="translate(1 1)"
-                                  d="M5 0v8.476L1.91 10l.424-3.562L0 3.821l3.353-.678L5 0z"
-                                />
-                              </g>
-                            </svg>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              xmlnsXlink="http://www.w3.org/1999/xlink"
-                              width={14}
-                              height={14}
-                              viewBox="0 0 12 12"
-                              className="star-icon"
-                            >
-                              <g fill="none" fillRule="evenodd">
-                                <path
-                                  fill="#b8b8b8"
-                                  transform="matrix(-1 0 0 1 11 1)"
-                                  d="M5 0v8.476L1.91 10l.424-3.562L0 3.821l3.353-.678L5 0z"
-                                />
-                                <path
-                                  fill="#b8b8b8"
-                                  transform="translate(1 1)"
-                                  d="M5 0v8.476L1.91 10l.424-3.562L0 3.821l3.353-.678L5 0z"
-                                />
-                              </g>
-                            </svg>
-                            <span className="text-small inline-block ml-2">
-                              from 3 star
-                            </span>
-                          </label>
-                        </div>
-                      </div>
+                      </Radio.Group>
                     </div>
                   </li>
                   <li className="nav-item">
@@ -569,7 +542,7 @@ const ShopPage = () => {
                 <div className="col-12 col-md">
                   {/* Heading */}
                   <h3 className="mb-1">
-                    {category?.title || "Tất cả sản phẩm"}
+                    {category?.title || t("product.all")}
                   </h3>
                   {/* Breadcrumb */}
                   <ol className="breadcrumb mb-md-0 font-size-xs text-gray-400">
@@ -583,7 +556,7 @@ const ShopPage = () => {
                 </div>
                 <div className="col-12 col-md-auto flex gap-1 items-center whitespace-nowrap">
                   {/* Select */}
-                  Sắp xếp theo:
+                  {t("Sắp xếp theo")} :
                   <select
                     value={search.sort}
                     onChange={(ev) => {
@@ -594,16 +567,20 @@ const ShopPage = () => {
                     }}
                     className="custom-select custom-select-xs"
                   >
-                    <option value="newest">Mới nhất</option>
-                    <option value="real_price.desc">Giá giảm dần</option>
-                    <option value="real_price.asc">Giá tăng dần</option>
+                    <option value="newest">{t("newest")}</option>
+                    <option value="real_price.desc">
+                      {t("price.decrease")}
+                    </option>
+                    <option value="real_price.asc">
+                      {t("price.increase")}
+                    </option>
                     <option value="discount_rate.desc">
-                      Giảm giá nhiều nhất
+                      {t("discount.higher")}
                     </option>
                     <option value="rating_average.desc">
-                      Đánh giá cao nhất
+                      {t("rated.higher")}
                     </option>
-                    <option value="top_seller">Mua nhiều nhất</option>
+                    <option value="top_seller">{t("buy.most")}</option>
                   </select>
                 </div>
               </div>

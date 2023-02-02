@@ -3,6 +3,7 @@ import { lazy } from "react";
 import profile from "./profile";
 import AuthRoute from "@/components/AuthRoute";
 import ProductDetails from "@/pages/product/[slug]";
+import Checkout from "../pages/Checkout";
 const ResetPasswordPage = lazy(() => import("@/pages/reset-password"));
 const ShippingPage = lazy(() => import("@/pages/shipping"));
 const Home = lazy(() => import("@/pages"));
@@ -82,6 +83,10 @@ export const routers = [
       {
         element: <ProductDetails />,
         path: PATH.productDetail,
+      },
+      {
+        element: <Checkout />,
+        path: PATH.checkout,
       },
     ],
   },

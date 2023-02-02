@@ -21,6 +21,6 @@ export const InputStyle = styled.div`
   }
   &.disable {
     pointer-event: none;
-    opacity: 0.5;
+    opacity: 0.2;
   }
 `;

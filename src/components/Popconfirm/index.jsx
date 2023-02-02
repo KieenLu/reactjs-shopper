@@ -25,13 +25,13 @@ export const Popconfirm = ({ children, ...props }) => {
         <>
           {props.description}
           <div className="flex gap-2 justify-end">
-            <Button
+            {/* <Button
               onClick={onCancel}
               type="outline"
               {...props.cancelButtonProps}
             >
               {props.cancelText || "Cancel"}
-            </Button>
+            </Button> */}
             <Button onClick={onOk} {...props.okButtonProps}>
               {props.okText || "Ok"}
             </Button>

@@ -1,15 +1,16 @@
+import { MESSAGE } from "@/config/message";
 import { PATH } from "@/config/path";
+import { useAction } from "@/hooks/useActions";
 import { useAuth } from "@/hooks/useAuth";
 import { productService } from "@/services/product";
-import { updateQuantity } from "@/stories/cart";
+import { updateQuantityAction } from "@/stories/cart";
 import { currency } from "@/utils/currency";
 import { handleError } from "@/utils/handleError";
 import { Popconfirm, message } from "antd";
 import { useRef } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../Button";
-
 const ProductCard = ({
   onRemoveWishlistSuccess,
   showRemove,
@@ -24,12 +25,9 @@ const ProductCard = ({
   rating_average,
   review_count,
 }) => {
-  // const path = generatePath(PATH.shop, {
-  //   slug: slug,
-  //   id: id,
-  // });
   const _slug = "/" + slug;
   const { user } = useAuth();
+  const { cart } = useSelector((store) => store.cart);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const salePrice = price - real_price;
@@ -77,27 +75,34 @@ const ProductCard = ({
     }
     loadingWishlsitRef.current = false;
   };
-  const onAddProductCart = async () => {
-    try {
-      message.loading({
-        key: "addToCart",
-        content: "Đang thêm sản phẩm vào giỏ hàng của bạn",
-      });
-      await dispatch(
-        updateQuantity({
+
+  const onAddProductCart = useAction({
+    action: () => {
+      const quantity =
+        cart?.listItems?.find((e) => e.productId === id)?.quantity || 0;
+      return dispatch(
+        updateQuantityAction({
           productId: id,
-          quantity: 1,
+          quantity: quantity + 1,
+          showPopover: true,
         })
       );
-      message.success({
-        key: "addToCart",
-        duration: 2,
-        content: `Đã thêm sản phẩm "${name}" vào giỏ hàng của bạn thành công.`,
-      });
-    } catch (err) {
-      handleError(err);
-    }
-  };
+    },
+    messageLoading: MESSAGE.LOADING_ADD_CART(name),
+    messageSuccess: false,
+  });
+  // const onAddProductCart = async () => {
+  //   try {
+  //     await dispatch(
+  //       updateQuantityAction({
+  //         productId: id,
+  //         quantity: 1,
+  //       })
+  //     );
+  //   } catch (err) {
+  //     handleError(err);
+  //   }
+  // };
   return (
     <div className="product-card card mb-7">
       {/* Image */}

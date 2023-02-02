@@ -1,16 +1,27 @@
 import { ListProductCardDiscover } from "@/components/ListProductCardDiscover";
+import Promotion from "@/components/Promotion";
+import ReviewCard from "@/components/ReviewCard";
 import { Slider } from "@/components/Slider";
 import { StyleSlider } from "@/components/Slider/style";
 import { Tab } from "@/components/Tab";
-import React from "react";
+import { useTranslate } from "@/components/TranslateProvider";
+import { PATH } from "@/config/path";
+import { useQuery } from "@/hooks/useQuery";
+import { reviewService } from "@/services/review";
 import { Helmet } from "react-helmet";
+import { Link } from "react-router-dom";
 
 export const HomePage = () => {
+  const { t } = useTranslate();
+  const { data: { data: review } = {}, loading } = useQuery({
+    queryFn: () => reviewService.getTopReview(),
+  });
   return (
     <>
       <Helmet>
-        <title>Trang chủ</title>
+        <title>{t("Trang chủ")}</title>
       </Helmet>
+      <Promotion />
       {/* CATEGORIES */}
       <section>
         <div
@@ -32,9 +43,9 @@ export const HomePage = () => {
               </div>
               <div className="card-body mt-auto py-8">
                 {/* Button */}
-                <a className="btn btn-white stretched-link" href="shop.html">
+                <Link className="btn btn-white stretched-link" to={PATH.shop}>
                   Shop Women <i className="fe fe-arrow-right ml-2" />
-                </a>
+                </Link>
               </div>
             </div>
           </div>
@@ -53,9 +64,9 @@ export const HomePage = () => {
               </div>
               <div className="card-body mt-auto py-8">
                 {/* Button */}
-                <a className="btn btn-white stretched-link" href="shop.html">
+                <Link className="btn btn-white stretched-link" to={PATH.shop}>
                   Shop Men <i className="fe fe-arrow-right ml-2" />
-                </a>
+                </Link>
               </div>
             </div>
           </div>
@@ -74,9 +85,9 @@ export const HomePage = () => {
               </div>
               <div className="card-body mt-auto py-8">
                 {/* Button */}
-                <a className="btn btn-white stretched-link" href="shop.html">
+                <Link className="btn btn-white stretched-link" to={PATH.shop}>
                   Shop Kids <i className="fe fe-arrow-right ml-2" />
-                </a>
+                </Link>
               </div>
             </div>
           </div>
@@ -94,10 +105,10 @@ export const HomePage = () => {
                 {/* Body */}
                 <div className="ml-6">
                   {/* Heading */}
-                  <h6 className="heading-xxs mb-1">Free shipping</h6>
+                  <h6 className="heading-xxs mb-1">{t("free.shipping")}</h6>
                   {/* Text */}
                   <p className="mb-0 font-size-sm text-muted">
-                    From all orders over $100
+                    {t("orders.over.100$")}
                   </p>
                 </div>
               </div>
@@ -110,10 +121,10 @@ export const HomePage = () => {
                 {/* Body */}
                 <div className="ml-6">
                   {/* Heading */}
-                  <h6 className="mb-1 heading-xxs">Free returns</h6>
+                  <h6 className="mb-1 heading-xxs">{t("free.returns")}</h6>
                   {/* Text */}
                   <p className="mb-0 font-size-sm text-muted">
-                    Return money within 30 days
+                    {t("returns.within.30days")}
                   </p>
                 </div>
               </div>
@@ -126,11 +137,9 @@ export const HomePage = () => {
                 {/* Body */}
                 <div className="ml-6">
                   {/* Heading */}
-                  <h6 className="mb-1 heading-xxs">Secure shopping</h6>
+                  <h6 className="mb-1 heading-xxs">{t("shopping.safe")}</h6>
                   {/* Text */}
-                  <p className="mb-0 font-size-sm text-muted">
-                    You're in safe hands
-                  </p>
+                  <p className="mb-0 font-size-sm text-muted">{t("safe")}</p>
                 </div>
               </div>
             </div>
@@ -142,10 +151,10 @@ export const HomePage = () => {
                 {/* Body */}
                 <div className="ml-6">
                   {/* Heading */}
-                  <h6 className="mb-1 heading-xxs">Over 10,000 Styles</h6>
+                  <h6 className="mb-1 heading-xxs">{t("styles")}</h6>
                   {/* Text */}
                   <p className="mb-0 font-size-sm text-muted">
-                    We have everything you need
+                    {t("styles.need")}
                   </p>
                 </div>
               </div>
@@ -193,12 +202,12 @@ export const HomePage = () => {
                   {/* Heading */}
                   <h4 className="mb-0">Bags Collection</h4>
                   {/* Link */}
-                  <a
+                  <Link
                     className="btn btn-link stretched-link text-reset"
-                    href="shop.html"
+                    to={PATH.shop}
                   >
                     Shop Now <i className="fe fe-arrow-right ml-2" />
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -227,12 +236,12 @@ export const HomePage = () => {
                   {/* Heading */}
                   <h4 className="mb-0">Printed men’s Shirts</h4>
                   {/* Link */}
-                  <a
+                  <Link
                     className="btn btn-link stretched-link px-0 text-reset"
-                    href="shop.html"
+                    to={PATH.shop}
                   >
                     Shop Now <i className="fe fe-arrow-right ml-2" />
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -256,12 +265,12 @@ export const HomePage = () => {
                   {/* Heading */}
                   <h4 className="mb-0">Basic women’s Dresses</h4>
                   {/* Link */}
-                  <a
+                  <Link
                     className="btn btn-link stretched-link px-0 text-reset"
-                    href="shop.html"
+                    to={PATH.shop}
                   >
                     Shop Now <i className="fe fe-arrow-right ml-2" />
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -282,12 +291,12 @@ export const HomePage = () => {
                   {/* Heading */}
                   <h4 className="mb-0">Sweatshirts</h4>
                   {/* Link */}
-                  <a
+                  <Link
                     className="btn btn-link stretched-link text-reset"
-                    href="shop.html"
+                    to={PATH.shop}
                   >
                     Shop Now <i className="fe fe-arrow-right ml-2" />
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -295,54 +304,46 @@ export const HomePage = () => {
         </div>
       </section>
       {/* TOP SELLERS */}
-      <Tab>
+      <Tab lazy name="sale-tab" defaultActive="do-dien-tu">
         <section className="py-12">
           <div className="container">
             <div className="row justify-content-center">
               <div className="col-12 col-md-10 col-lg-8 col-xl-6">
                 {/* Heading */}
-                <h2 className="mb-4 text-center">
-                  Sản phẩm bán chạy hàng tháng
-                </h2>
+                <h2 className="mb-4 text-center">{t("product.top.seller")}</h2>
                 {/* Nav */}
                 <div className="nav justify-content-center mb-10">
-                  <Tab.Title value="do-dien-tu">Đồ điện tử</Tab.Title>
-                  <Tab.Title value="do-gia-dung">Đồ gia dụng</Tab.Title>
+                  <Tab.Title value="do-dien-tu">
+                    {t("device.electron")}
+                  </Tab.Title>
+                  <Tab.Title value="do-gia-dung">
+                    {t("device.houseware")}
+                  </Tab.Title>
                   <Tab.Title value="san-pham-khuyen-mai">
-                    Sản phẩm khuyến mãi
+                    {t("product.promotional")}
                   </Tab.Title>
                 </div>
               </div>
             </div>
             <div className="tab-content">
-              {/* <Tab.Content value="do-dien-tu">
+              <Tab.Content value="do-dien-tu">
                 <ListProductCardDiscover
-                  query="?categories=4221&limit=8"
+                  query="categories=4221&limit=8"
                   link="/dien-tu-dien-lanh/4221"
                 />
               </Tab.Content>
               <Tab.Content value="do-gia-dung">
                 <ListProductCardDiscover
-                  query="?categories=1882&limit=8"
+                  query="categories=1882&limit=8"
                   link="/dien-gia-dung/1882"
                 />
               </Tab.Content>
               <Tab.Content value="san-pham-khuyen-mai">
                 <ListProductCardDiscover
-                  query="?sort=discount_rate.desc&limit=8"
-                  link="/san-pham?page=1&sort=discount_rate.desc"
+                  query="sort=discount_rate.desc&limit=8"
+                  link="/cua-hang?page=1&sort=discount_rate.desc"
                 />
-              </Tab.Content> */}
-            </div>
-            <div className="row">
-              <div className="col-12">
-                {/* Link  */}
-                <div className="mt-7 text-center">
-                  <a className="link-underline" href="#!">
-                    Discover more
-                  </a>
-                </div>
-              </div>
+              </Tab.Content>
             </div>
           </div>
         </section>
@@ -419,9 +420,9 @@ export const HomePage = () => {
                 </div>
               </div>
               {/* Button */}
-              <a className="btn btn-dark" href="shop.html">
+              <Link className="btn btn-dark" to={PATH.shop}>
                 Mua ngay <i className="fe fe-arrow-right ml-2" />
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -433,10 +434,10 @@ export const HomePage = () => {
             <div className="col-12 col-md-10 col-lg-8 col-xl-6 text-center">
               {/* Preheading */}
               <h6 className="heading-xxs mb-3 text-gray-400">
-                What buyers say
+                {t("buyers.say")}
               </h6>
               {/* Heading */}
-              <h2 className="mb-10">Latest buyers Reviews</h2>
+              <h2 className="mb-10"> {t("buyers.reviews")}</h2>
             </div>
           </div>
           <div className="row">
@@ -444,277 +445,9 @@ export const HomePage = () => {
               {/* Slider */}
               <StyleSlider>
                 <Slider slidesPerView={3} spaceBetween={30}>
-                  <div className="slider-item">
-                    {/* Card */}
-                    <div className="card-lg card border">
-                      <div className="card-body">
-                        {/* Header */}
-                        <div className="row align-items-center mb-6">
-                          <div className="col-4">
-                            {/* Image */}
-                            <img
-                              src="./img/products/product-13.jpg"
-                              alt="..."
-                              className="img-fluid"
-                            />
-                          </div>
-                          <div className="col-8 ml-n2">
-                            {/* Preheading */}
-                            <a
-                              className="font-size-xs text-muted"
-                              href="shop.html"
-                            >
-                              Shoes
-                            </a>
-                            {/* Heading */}
-                            <a
-                              className="d-block font-weight-bold text-body"
-                              href="product.html"
-                            >
-                              Low top Sneakers
-                            </a>
-                            {/* Rating */}
-                            <div
-                              className="rating font-size-xxs text-warning"
-                              data-value={3}
-                            >
-                              <div className="rating-item">
-                                <i className="fas fa-star" />
-                              </div>
-                              <div className="rating-item">
-                                <i className="fas fa-star" />
-                              </div>
-                              <div className="rating-item">
-                                <i className="fas fa-star" />
-                              </div>
-                              <div className="rating-item">
-                                <i className="fas fa-star" />
-                              </div>
-                              <div className="rating-item">
-                                <i className="fas fa-star" />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        {/* Blockquote */}
-                        <blockquote className="mb-0">
-                          <p className="text-muted">
-                            From creepeth said moved given divide make multiply
-                            of him shall itself also above second doesn't unto
-                            created saying land herb sea midst night wherein.
-                          </p>
-                          <footer className="font-size-xs text-muted">
-                            Logan Edwards,{" "}
-                            <time dateTime="2019-06-01">01 Jun 2019</time>
-                          </footer>
-                        </blockquote>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="">
-                    {/* Card */}
-                    <div className="card-lg card border">
-                      <div className="card-body">
-                        {/* Header */}
-                        <div className="row align-items-center mb-6">
-                          <div className="col-4">
-                            {/* Image */}
-                            <img
-                              src="./img/products/product-14.jpg"
-                              alt="..."
-                              className="img-fluid"
-                            />
-                          </div>
-                          <div className="col-8 ml-n2">
-                            {/* Preheading */}
-                            <a
-                              className="font-size-xs text-muted"
-                              href="shop.html"
-                            >
-                              Dresses
-                            </a>
-                            {/* Heading */}
-                            <a
-                              className="d-block font-weight-bold text-body"
-                              href="product.html"
-                            >
-                              Cotton print Dress
-                            </a>
-                            {/* Rating */}
-                            <div
-                              className="rating font-size-xxs text-warning"
-                              data-value={5}
-                            >
-                              <div className="rating-item">
-                                <i className="fas fa-star" />
-                              </div>
-                              <div className="rating-item">
-                                <i className="fas fa-star" />
-                              </div>
-                              <div className="rating-item">
-                                <i className="fas fa-star" />
-                              </div>
-                              <div className="rating-item">
-                                <i className="fas fa-star" />
-                              </div>
-                              <div className="rating-item">
-                                <i className="fas fa-star" />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        {/* Blockquote */}
-                        <blockquote className="mb-0">
-                          <p className="text-muted">
-                            God every fill great replenish darkness unto. Very
-                            open. Likeness their that light. Given under image
-                            to. Subdue of shall cattle day fish form saw spirit
-                            and given stars, us you whales may, land, saw fill
-                            unto.
-                          </p>
-                          <footer className="font-size-xs text-muted">
-                            Jane Jefferson,{" "}
-                            <time dateTime="2019-05-29">29 May 2019</time>
-                          </footer>
-                        </blockquote>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="">
-                    {/* Card */}
-                    <div className="card-lg card border">
-                      <div className="card-body">
-                        {/* Header */}
-                        <div className="row align-items-center mb-6">
-                          <div className="col-4">
-                            {/* Image */}
-                            <img
-                              src="./img/products/product-15.jpg"
-                              alt="..."
-                              className="img-fluid"
-                            />
-                          </div>
-                          <div className="col-8 ml-n2">
-                            {/* Preheading */}
-                            <a
-                              className="font-size-xs text-muted"
-                              href="shop.html"
-                            >
-                              T-shirts
-                            </a>
-                            {/* Heading */}
-                            <a
-                              className="d-block font-weight-bold text-body"
-                              href="product.html"
-                            >
-                              Oversized print T-shirt
-                            </a>
-                            {/* Rating */}
-                            <div
-                              className="rating font-size-xxs text-warning"
-                              data-value={4}
-                            >
-                              <div className="rating-item">
-                                <i className="fas fa-star" />
-                              </div>
-                              <div className="rating-item">
-                                <i className="fas fa-star" />
-                              </div>
-                              <div className="rating-item">
-                                <i className="fas fa-star" />
-                              </div>
-                              <div className="rating-item">
-                                <i className="fas fa-star" />
-                              </div>
-                              <div className="rating-item">
-                                <i className="fas fa-star" />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        {/* Blockquote */}
-                        <blockquote className="mb-0">
-                          <p className="text-muted">
-                            Fill his waters wherein signs likeness waters.
-                            Second light gathered appear sixth fourth, seasons
-                            behold creeping female.
-                          </p>
-                          <footer className="font-size-xs text-muted">
-                            Darrell Baker,{" "}
-                            <time dateTime="2019-05-18">18 May 2019</time>
-                          </footer>
-                        </blockquote>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="">
-                    {/* Card */}
-                    <div className="card-lg card border">
-                      <div className="card-body">
-                        {/* Header */}
-                        <div className="row align-items-center mb-6">
-                          <div className="col-4">
-                            {/* Image */}
-                            <img
-                              src="./img/products/product-10.jpg"
-                              alt="..."
-                              className="img-fluid"
-                            />
-                          </div>
-                          <div className="col-8 ml-n2">
-                            {/* Preheading */}
-                            <a
-                              className="font-size-xs text-muted"
-                              href="shop.html"
-                            >
-                              Bags &amp; Accessories
-                            </a>
-                            {/* Heading */}
-                            <a
-                              className="d-block font-weight-bold text-body"
-                              href="product.html"
-                            >
-                              Suede cross body Bag
-                            </a>
-                            {/* Rating */}
-                            <div
-                              className="rating font-size-xxs text-warning"
-                              data-value={4}
-                            >
-                              <div className="rating-item">
-                                <i className="fas fa-star" />
-                              </div>
-                              <div className="rating-item">
-                                <i className="fas fa-star" />
-                              </div>
-                              <div className="rating-item">
-                                <i className="fas fa-star" />
-                              </div>
-                              <div className="rating-item">
-                                <i className="fas fa-star" />
-                              </div>
-                              <div className="rating-item">
-                                <i className="fas fa-star" />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        {/* Blockquote */}
-                        <blockquote className="mb-0">
-                          <p className="text-muted">
-                            God every fill great replenish darkness unto. Very
-                            open. Likeness their that light. Given under image
-                            to. Subdue of shall cattle day fish form saw spirit
-                            and given stars.
-                          </p>
-                          <footer className="font-size-xs text-muted">
-                            Pavel Doe,{" "}
-                            <time dateTime="2019-05-29">29 May 2019</time>
-                          </footer>
-                        </blockquote>
-                      </div>
-                    </div>
-                  </div>
+                  {review?.map((e) => (
+                    <ReviewCard key={e._id} {...e} />
+                  ))}
                 </Slider>
               </StyleSlider>
             </div>

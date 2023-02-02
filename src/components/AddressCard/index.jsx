@@ -7,7 +7,7 @@ import { PATH } from "@/config/path";
 import Skeleton from "../Skeleton";
 import { Button } from "../Button";
 import { useRef } from "react";
-import { Popconfirm } from "../PopupConfirm";
+import { Popconfirm } from "../Popconfirm";
 
 export const CardAddress = ({
   onDelete,

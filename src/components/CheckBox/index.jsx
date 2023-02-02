@@ -2,9 +2,8 @@ import React, { useId } from "react";
 
 export const Checkbox = ({ children, ...props }) => {
   const id = useId();
-
   const _onChange = (ev) => {
-    props?.onChange?.({ target: { value: ev.target.checked } });
+    props?.onChange?.(ev.target.checked);
   };
   return (
     <div className="custom-control custom-checkbox">
@@ -12,6 +11,7 @@ export const Checkbox = ({ children, ...props }) => {
         className="custom-control-input"
         id={id}
         type="checkbox"
+        checked={props.value}
         {...props}
         onChange={_onChange}
       />

@@ -39,7 +39,6 @@ export const SearchDrawer = ({ open, onClose }) => {
           id: category.id,
         })
       : PATH.shop) + `?${queryLink}`;
-
   return (
     <Drawer
       open={open}
@@ -173,7 +172,7 @@ export const SearchDrawer = ({ open, onClose }) => {
 
 const CartItem = ({ name, real_price, price, slug, id, images }) => {
   const salePrice = price - real_price;
-
+  console.log(slug);
   return (
     <div className="row align-items-center position-relative mb-5">
       {salePrice > 0 && (
@@ -188,9 +187,9 @@ const CartItem = ({ name, real_price, price, slug, id, images }) => {
       <div className="col position-static">
         {/* Text */}
         <div className="mb-0 font-weight-bold">
-          <a className="stretched-link text-body" href="./product.html">
+          <Link className="stretched-link text-body" to={""}>
             {name}
-          </a>
+          </Link>
           <br />
           <div className="card-product-price">
             {real_price < price ? (

@@ -11,4 +11,13 @@ export const cartService = {
   removeItem(productId) {
     return http.delete(`${CART_API}/${productId}`);
   },
+  getMethodShipping() {
+    return http.get(`${CART_API}/shipping-method`);
+  },
+  getPromotion(code) {
+    return http.get(`${CART_API}/promotion/${code}`);
+  },
+  checkout(data) {
+    return http.get(`${CART_API}/checkout}`, data);
+  },
 };

@@ -1,11 +1,14 @@
+import { useTranslate } from "@/components/TranslateProvider";
 import { PATH } from "@/config/path";
 import { logoutThunkAction } from "@/stories/auth";
+import { cartActions } from "@/stories/cart";
 import React, { Suspense } from "react";
 import { Helmet } from "react-helmet";
 import { useDispatch } from "react-redux";
 import { NavLink, Outlet } from "react-router-dom";
 
 export const ProfileLayout = () => {
+  const { t } = useTranslate();
   const dispatch = useDispatch();
   const logout = (ev) => {
     ev.preventDefault();
@@ -33,39 +36,42 @@ export const ProfileLayout = () => {
                   className="list-group-item list-group-item-action dropright-toggle "
                   to={PATH.profile.order}
                 >
-                  Đơn hàng
+                  {t("order")}
                 </NavLink>
                 <NavLink
                   className="list-group-item list-group-item-action dropright-toggle "
                   end
                   to={PATH.profile.index}
                 >
-                  Tài khoản của tôi
+                  {t("account")}
                 </NavLink>
                 <NavLink
                   className="list-group-item list-group-item-action dropright-toggle "
                   to={PATH.profile.wishlist}
                 >
-                  Sản phẩm yêu thích
+                  {t("wishlist")}
                 </NavLink>
                 <NavLink
                   className="list-group-item list-group-item-action dropright-toggle "
                   to={PATH.profile.address}
                 >
-                  Sổ địa chỉ
+                  {t("book.address")}
                 </NavLink>
                 <NavLink
                   className="list-group-item list-group-item-action dropright-toggle "
                   to={PATH.profile.payment}
                 >
-                  Sổ thanh toán
+                  {t("book.payment")}
                 </NavLink>
                 <a
                   className="list-group-item list-group-item-action dropright-toggle"
-                  href="#!"
-                  onClick={logout}
+                  href="#"
+                  onClick={() => {
+                    dispatch(logoutThunkAction());
+                    dispatch(cartActions.clearCart());
+                  }}
                 >
-                  Đăng xuất
+                  {t("logout")}
                 </a>
               </div>
             </nav>

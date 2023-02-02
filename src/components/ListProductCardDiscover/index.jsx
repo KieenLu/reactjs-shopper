@@ -7,10 +7,7 @@ import { ProductCardLoading } from "../ProductCardLoading";
 
 const ListProductCard = withListLoading(ProductCard, ProductCardLoading);
 export const ListProductCardDiscover = ({ link, query }) => {
-  const {
-    data: { data = [] },
-    loading,
-  } = useQuery({
+  const { data: { data = [] } = {}, loading } = useQuery({
     queryFn: () => productService.getProduct(query),
   });
 

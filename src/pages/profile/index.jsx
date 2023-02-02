@@ -142,7 +142,7 @@ export const Profile = () => {
                 <div className="wrap" onClick={triggerEvent}>
                   <img src={previewSrc || user.avatar || avatarDefault} />
                   <i className="icon">
-                    <img src="./img/icons/icon-camera.svg" />
+                    <img src="/img/icons/icon-camera.svg" />
                   </i>
                 </div>
               )}

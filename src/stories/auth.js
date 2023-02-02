@@ -11,6 +11,7 @@ import {
 } from "@/utils/token";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { message } from "antd";
+import { getCartThunkAction } from "./cart";
 
 // export const registerThunkAction = createAsyncThunk(
 //   "auth/register",
@@ -35,6 +36,7 @@ export const loginThunkAction = createAsyncThunk(
         message.success("Đăng nhập thành công, hãy tận hưởng Shopper");
       }
       setToken(res.data);
+      thunkApi.dispatch(getCartThunkAction());
       const user = await userService.getProfile();
       setUser(user.data);
       // thunkApi.dispatch(authActions.setUser(user.data))
