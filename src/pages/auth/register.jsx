@@ -89,7 +89,6 @@ const RegisterPage = () => {
                   Conditions, and Privacy and Cookie Policy.
                 </div>
               </div>
-              <div className="col-12 col-md">{/* Newsletter */}</div>
               <div className="col-12">
                 {/* Button */}
                 <Button loading={registerLoading} onClick={onSubmit}>

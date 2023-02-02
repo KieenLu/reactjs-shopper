@@ -8,6 +8,7 @@ import { useSearchParams } from "react-router-dom";
 import { userService } from "@/services/user";
 import { handleError } from "@/utils/handleError";
 import { message } from "antd";
+import { useQuery } from "@/hooks/useQuery";
 
 export const ForgotPasswordModal = ({ open, onCancel, onOk }) => {
   const [isSuccess, setIsSuccess] = useState(false);
@@ -19,17 +20,22 @@ export const ForgotPasswordModal = ({ open, onCancel, onOk }) => {
       regexp("email", "Vui lòng nhập đúng định dạng Email"),
     ],
   });
+  const { refetch: sendMail, loading: sendMailLoading } = useQuery({
+    queryFn: ({ params }) => userService.sendEmailResetPassword(...params),
+    enabled: false,
+  });
   const onSendEmailResetPassword = async (ev) => {
     ev.preventDefault();
     try {
       if (validate()) {
-        await userService.sendEmailResetPassword(values);
+        await sendMail(values);
         message.success(
           "Email lấy lại mật khẩu đã được gửi thành công, vui lòng kiểm tra Email đã đăng ký để thực hiện"
         );
         setIsSuccess(true);
       }
     } catch (err) {
+      console.error(err);
       handleError(err);
     }
   };
@@ -96,15 +102,21 @@ export const ForgotPasswordModal = ({ open, onCancel, onOk }) => {
             <form>
               {/* Email */}
               <Field
-                placeholder="Email Address *"
-                required
                 forgot
+                required
+                placeholder="Email Address *"
                 {...register("username")}
               />
 
               {/* Button */}
-              <Button onClick={onSendEmailResetPassword}>Reset Password</Button>
             </form>
+            <Button
+              className="inline-flex"
+              loading={sendMailLoading}
+              onClick={onSendEmailResetPassword}
+            >
+              Reset Password
+            </Button>
           </div>
         </div>
       )}

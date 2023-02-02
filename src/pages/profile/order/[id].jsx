@@ -1,5 +1,4 @@
 import { Navigate } from "@/components/Navigate";
-import { OrderItemStatus } from "@/components/OrderItem/OrderItemStatus";
 import Skeleton from "@/components/Skeleton";
 import { PAYMENT_METHOD } from "@/config";
 import { PATH } from "@/config/path";
@@ -12,6 +11,7 @@ import { useMemo } from "react";
 import { Link, generatePath, useParams } from "react-router-dom";
 import { Skeleton as SkeletonA } from "antd";
 import { slugify } from "@/utils/slugify";
+import { OrderItemStatus } from "@/components/OrderItem/orderItemStatus";
 
 export default function OrderDetail() {
   const { id } = useParams();

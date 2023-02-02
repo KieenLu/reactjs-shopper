@@ -1,20 +1,19 @@
-import React, { useMemo } from "react";
-import Skeleton from "../Skeleton";
-import { withLoading } from "@/utils/withLoading";
-import { withListLoading } from "@/utils/withListLoading";
-import { useQuery } from "@/hooks/useQuery";
-import { Paginate } from "../Paginate";
-import { orderService } from "@/services/order";
-import queryString from "query-string";
-import { currency } from "@/utils/currency";
-import moment from "moment";
-import { Button } from "../Button";
-import { generatePath, useNavigate, useSearchParams } from "react-router-dom";
 import { PATH } from "@/config/path";
-import { OrderItemStatus } from "./orderItemStatus";
+import { useQuery } from "@/hooks/useQuery";
 import { useSearch } from "@/hooks/useSearch";
-import { useDispatch } from "react-redux";
+import { orderService } from "@/services/order";
 import { updateQuantityAction } from "@/stories/cart";
+import { withListLoading } from "@/utils/withListLoading";
+import { withLoading } from "@/utils/withLoading";
+import moment from "moment";
+import queryString from "query-string";
+import { useMemo } from "react";
+import { useDispatch } from "react-redux";
+import { generatePath, useNavigate } from "react-router-dom";
+import { Button } from "../Button";
+import { Paginate } from "../Paginate";
+import Skeleton from "../Skeleton";
+import { OrderItemStatus } from "./orderItemStatus";
 
 const OrderItemLoading = () => {
   return (
