@@ -13,12 +13,15 @@ const CartItem = ({ thumbnail_url, name, real_price, id, quantity }) => {
   const onChangeQuantity = (quantity) => async (ev) => {
     ev.preventDefault();
     try {
-      dispatch(
+      setDisable(true);
+      await dispatch(
         updateQuantityAction({
           productId: id,
           quantity,
         })
       );
+      bb;
+      setDisable(false);
     } catch (err) {
       console.error(err);
     }
@@ -87,7 +90,11 @@ const CartItem = ({ thumbnail_url, name, real_price, id, quantity }) => {
             {/* Remove */}
             <a
               onClick={onChangeQuantity(0)}
-              className="font-size-xs text-gray-400 ml-auto"
+              className={classNames(
+                disable
+                  ? "font-size-xs text-gray-400 ml-auto pointer-events-none opacity-20"
+                  : "font-size-xs text-gray-400 ml-auto"
+              )}
               href="#"
             >
               <i className="fe fe-x" /> Xóa sản phẩm

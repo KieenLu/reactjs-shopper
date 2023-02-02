@@ -3,6 +3,8 @@ import { currency } from "@/utils/currency";
 import { Drawer } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import CartItem from "../CartItem";
+import { Link } from "react-router-dom";
+import { PATH } from "@/config/path";
 
 export const CartDrawer = () => {
   const { openCart } = useSelector((store) => store.cart);
@@ -51,43 +53,35 @@ export const CartDrawer = () => {
           </strong>
         </div>
         {/* Buttons */}
-        <div className="modal-body">
-          <a className="btn btn-block btn-dark" href="./checkout.html">
-            Continue to Checkout
-          </a>
-          <a
-            className="btn btn-block btn-outline-dark"
-            href="./shopping-cart.html"
-          >
-            View Cart
-          </a>
-        </div>
+        {cart?.totalQuantity === 0 ? (
+          <div className="modal-body flex-grow-0 my-auto">
+            {/* Heading */}
+            <h6 className="mb-7 text-center">Your cart is empty 😞</h6>
+            {/* Button */}
+            <Link
+              onClick={onClose}
+              className="btn btn-block btn-outline-dark"
+              to={PATH.shop}
+            >
+              Continue Shopping
+            </Link>
+          </div>
+        ) : (
+          <div className="modal-body">
+            <a className="btn btn-block btn-dark" href="./checkout.html">
+              Continue to Checkout
+            </a>
+            <Link
+              onClick={onClose}
+              className="btn btn-block btn-outline-dark"
+              to={PATH.viewCart}
+            >
+              View Cart
+            </Link>
+          </div>
+        )}
       </div>
       {/* Empty cart (remove `.d-none` to enable it) */}
-      <div className="modal-content d-none">
-        {/* Close */}
-        <button
-          type="button"
-          className="close"
-          data-dismiss="modal"
-          aria-label="Close"
-        >
-          <i className="fe fe-x" aria-hidden="true" />
-        </button>
-        {/* Header*/}
-        <div className="modal-header line-height-fixed font-size-lg">
-          <strong className="mx-auto">Your Cart (0)</strong>
-        </div>
-        {/* Body */}
-        <div className="modal-body flex-grow-0 my-auto">
-          {/* Heading */}
-          <h6 className="mb-7 text-center">Your cart is empty 😞</h6>
-          {/* Button */}
-          <a className="btn btn-block btn-outline-dark" href="#!">
-            Continue Shopping
-          </a>
-        </div>
-      </div>
     </Drawer>
   );
 };

@@ -14,7 +14,7 @@ import { PATH } from "@/config/path";
 import { OrderItemStatus } from "./orderItemStatus";
 import { useSearch } from "@/hooks/useSearch";
 import { useDispatch } from "react-redux";
-import { updateCartItemAction } from "@/stories/cart";
+import { updateQuantityAction } from "@/stories/cart";
 
 const OrderItemLoading = () => {
   return (
@@ -76,7 +76,7 @@ export const OrderItem = withLoading((props) => {
   const onReOrder = () => {
     for (let i in listItems) {
       dispatch(
-        updateCartItemAction({
+        updateQuantityAction({
           productId: listItems[i].productId,
           quantity: 1,
         })
@@ -163,12 +163,11 @@ export const ListOrder = ({ status }) => {
     status,
     page: search.page,
   });
-  const {
-    loading,
-    data: { data: orders, paginate = {} },
-  } = useQuery({
-    queryFn: () => orderService.getOrder(`?${qs}`),
-  });
+  const { loading, data: { data: orders = [], paginate = {} } = {} } = useQuery(
+    {
+      queryFn: () => orderService.getOrder(`?${qs}`),
+    }
+  );
 
   return (
     <>
@@ -178,7 +177,7 @@ export const ListOrder = ({ status }) => {
         loadingCount={5}
         empty={
           <div className="flex items-center flex-col gap-5 text-center">
-            <img width={200} src="/img/empty-order.png" alt="" />
+            <img width={200} src="/src/assets/img/empty-order.jpg" alt="" />
             <p>Chưa có đơn hàng nào</p>
           </div>
         }

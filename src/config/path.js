@@ -26,4 +26,5 @@ export const PATH = {
   account: "/signin",
   resetPassword: "/reset-password",
   checkout: "/checkout",
+  viewCart: "/view-cart",
 };

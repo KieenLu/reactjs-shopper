@@ -1,10 +1,12 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { authReducer, getUserThunkAction } from "./auth";
 import { cartReducer, getCartThunkAction } from "./cart";
+import { cacheReducer } from "./cache";
 
 const reducers = combineReducers({
   auth: authReducer,
   cart: cartReducer,
+  cache: cacheReducer,
 });
 export const store = configureStore({
   reducer: reducers,

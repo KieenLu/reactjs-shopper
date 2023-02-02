@@ -4,6 +4,7 @@ import profile from "./profile";
 import AuthRoute from "@/components/AuthRoute";
 import ProductDetails from "@/pages/product/[slug]";
 import Checkout from "../pages/Checkout";
+import ViewCart from "@/pages/cart";
 const ResetPasswordPage = lazy(() => import("@/pages/reset-password"));
 const ShippingPage = lazy(() => import("@/pages/shipping"));
 const Home = lazy(() => import("@/pages"));
@@ -87,6 +88,10 @@ export const routers = [
       {
         element: <Checkout />,
         path: PATH.checkout,
+      },
+      {
+        element: <ViewCart />,
+        path: PATH.viewCart,
       },
     ],
   },

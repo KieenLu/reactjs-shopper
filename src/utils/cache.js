@@ -1,3 +1,6 @@
+import { store } from "@/stories";
+import { cacheActions } from "@/stories/cache";
+
 export const localStorageCache = {
   set: (name, data, expired) => {
     const storeData = {
@@ -47,5 +50,21 @@ export const sessionStorageCache = {
   },
   remove: (name) => {
     sessionStorage.removeItem(name);
+  },
+};
+
+export const reduxStorageCache = {
+  set: (name, data, expired) => {
+    const storeData = {
+      expired,
+      data,
+    };
+    store.dispatch(cacheActions.setCache({ [name]: storeData }));
+  },
+  get: (name) => {
+    return store.getState().cache[name]?.data;
+  },
+  remove: (name) => {
+    store.dispatch(cacheActions.removeCache(name));
   },
 };

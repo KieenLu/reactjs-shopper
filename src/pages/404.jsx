@@ -1,4 +1,6 @@
+import { PATH } from "@/config/path";
 import React from "react";
+import { Link } from "react-router-dom";
 
 export const Page404 = () => {
   return (
@@ -16,9 +18,9 @@ export const Page404 = () => {
               that you return to home page.
             </p>
             {/* Button */}
-            <a className="btn btn-dark" href="index.html">
+            <Link className="btn btn-dark" to={PATH.home}>
               Go to Homepage
-            </a>
+            </Link>
           </div>
         </div>
       </div>
