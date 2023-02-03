@@ -3,9 +3,7 @@ import { PATH } from "@/config/path";
 import { useQuery } from "@/hooks/useQuery";
 import { userService } from "@/services/user";
 import { array } from "@/utils/array";
-import React from "react";
-import { Helmet } from "react-helmet";
-import { Link, generatePath } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export const ProfileAddress = () => {
   const {

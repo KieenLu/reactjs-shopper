@@ -1,8 +1,8 @@
 import PrivateRoute from "@/components/PrivateRoute";
 import { PATH } from "@/config/path";
-import AddressDetail from "@/pages/profile/address/newAddress";
-import OrderDetail from "@/pages/profile/order/[id]";
 import { lazy } from "react";
+const AddressDetail = lazy(() => import("@/pages/profile/address/newAddress"));
+const OrderDetail = lazy(() => import("@/pages/profile/order/[id]"));
 const ProfileLayout = lazy(() => import("@/layouts/ProfileLayout"));
 const Profile = lazy(() => import("@/pages/profile"));
 const ProfileOrder = lazy(() => import("@/pages/profile/order"));
