@@ -172,7 +172,6 @@ export const SearchDrawer = ({ open, onClose }) => {
 
 const CartItem = ({ name, real_price, price, slug, id, images }) => {
   const salePrice = price - real_price;
-  console.log(slug);
   return (
     <div className="row align-items-center position-relative mb-5">
       {salePrice > 0 && (

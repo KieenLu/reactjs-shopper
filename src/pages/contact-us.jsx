@@ -162,7 +162,7 @@ const ContactPage = () => {
                   <Field placeholder="Họ và Tên . . ." />
                 </Form.Item>
                 <Form.Item name="username">
-                  <Field disabled placeholder="Địa chỉ Email . . ." />
+                  <Field placeholder="Địa chỉ Email . . ." />
                 </Form.Item>
                 <Form.Item name="phone">
                   <Field placeholder="Số điện thoại . . ." />

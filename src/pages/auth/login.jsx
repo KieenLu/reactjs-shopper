@@ -67,7 +67,7 @@ const LoginPage = () => {
               <div className="col-12 col-md">
                 {/* Remember */}
                 <Field
-                  {...register("remember")}
+                  {...register("rememberpassword")}
                   renderField={(props) => (
                     <Checkbox {...props}>Remember me</Checkbox>
                   )}

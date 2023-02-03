@@ -167,12 +167,9 @@ export default function OrderDetail() {
             <div className="col-12 col-md-6">
               {/* Heading */}
               <p className="font-size-sm mb-0 leading-[35px]">
-                <a
-                  className="text-body text-xl font-bold "
-                  href="./product.html"
-                >
+                <Link className="text-body text-xl font-bold " to={PATH.shop}>
                   {detail.shipping.fullName}
-                </a>{" "}
+                </Link>{" "}
                 <br />
                 <b>Số điện thoại:</b> {detail.shipping.phone} <br />
                 <b>Email:</b>

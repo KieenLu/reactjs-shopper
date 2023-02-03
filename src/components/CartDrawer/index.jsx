@@ -53,7 +53,7 @@ export const CartDrawer = () => {
           </strong>
         </div>
         {/* Buttons */}
-        {cart?.totalQuantity === 0 ? (
+        {cart === null ? (
           <div className="modal-body flex-grow-0 my-auto">
             {/* Heading */}
             <h6 className="mb-7 text-center">Your cart is empty 😞</h6>

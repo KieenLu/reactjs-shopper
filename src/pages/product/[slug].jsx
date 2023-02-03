@@ -36,7 +36,7 @@ const ProductDetails = () => {
     page: search.page,
   });
   const {
-    data: { data: detail } = {},
+    data: { data: detail },
     error,
     loading,
   } = useQuery({
@@ -52,7 +52,7 @@ const ProductDetails = () => {
     messageSuccess: MESSAGE.ADD_WISHLIST_SUCCESS(detail?.name),
   });
   const {
-    data: { data: reviews = [], paginate: reviewPaginate } = {},
+    data: { data: reviews = [], paginate: reviewPaginate },
 
     loading: reviewLoading,
     refetch: refetchReview,
@@ -61,27 +61,39 @@ const ProductDetails = () => {
     enabled: !!id,
     limitDuration: 3000,
   });
-  console.log(detail);
-  console.log(reviews);
 
   const { cart, loading: cartLoading } = useCart();
   const { [id]: addCartLoading } = cartLoading;
   const cartQuantity =
     (cart?.listItems?.find((e) => e.productId === id)?.quantity || 0) + 1;
-  const addToCart = async (ev) => {
-    try {
-      message.loading("Đang thêm sản phẩm vào giỏ hàng");
-      await dispatch(
+  // const addToCart = async (ev) => {
+  //   try {
+  //     await dispatch(
+  //       updateQuantityAction({
+  //         productId: id,
+  //         quantity: cartQuantity,
+  //         showPopover: true,
+  //       })
+  //     );
+  //   } catch (err) {
+  //     handleError(err);
+  //   }
+  // };
+  const addToCart = useAction({
+    action: () => {
+      const quantity =
+        cart?.listItems?.find((e) => e.productId == id)?.quantity || 0;
+      return dispatch(
         updateQuantityAction({
           productId: id,
-          quantity: cartQuantity,
+          quantity: quantity + 1,
+          showPopover: true,
         })
       );
-      message.success("Thêm sản phẩm vào giỏ hàng thành công");
-    } catch (err) {
-      handleError(err);
-    }
-  };
+    },
+    messageLoading: MESSAGE.LOADING_MESSAGE,
+    messageSuccess: false,
+  });
   if (loading) return <div>...LOADING</div>;
   if (!id || error) return <Page404 />;
 
@@ -484,7 +496,7 @@ const ProductDetails = () => {
                   </div>
                   {/* Count */}
                   <strong className="font-size-sm ml-2">
-                    Reviews ({detail?.review_count})
+                    Reviews ({reviewPaginate?.count})
                   </strong>
                 </div>
                 {/* <div className="col-12 col-md-auto">
@@ -622,7 +634,11 @@ const ProductDetails = () => {
                 </div>
                 {/* Review */}
               </div>
-              <Paginate totalPage={reviewPaginate?.totalPage} />
+              {reviewLoading ? (
+                <></>
+              ) : (
+                <Paginate totalPage={reviewPaginate?.totalPage} />
+              )}
               {/* Pagination */}
               {/* <nav className="d-flex justify-content-center mt-9">
                 <ul className="pagination pagination-sm text-gray-400">

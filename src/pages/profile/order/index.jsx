@@ -3,7 +3,6 @@ import { Tab } from "@/components/Tab";
 import { useQuery } from "@/hooks/useQuery";
 import { orderService } from "@/services/order";
 import { Badge } from "antd";
-import React from "react";
 import { Helmet } from "react-helmet";
 
 export default function ProfileOrder() {
@@ -22,6 +21,7 @@ export default function ProfileOrder() {
       orderService.count("?status=shipping");
     },
   });
+
   return (
     <>
       <Helmet>

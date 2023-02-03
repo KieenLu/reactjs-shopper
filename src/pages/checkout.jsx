@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 const CheckOutPage = () => {
   return (
@@ -227,14 +228,14 @@ const CheckOutPage = () => {
                     <div className="row align-items-center">
                       <div className="col-4">
                         {/* Image */}
-                        <a href="./product.html">
+                        <Link to={PATH.shop}>
                           <img className="img-fluid" src="./img/products/product-6.jpg" alt="..." />
-                        </a>
+                        </Link>
                       </div>
                       <div className="col-8">
                         {/* Title */}
                         <p className="font-size-sm font-weight-bold mb-6">
-                          <a className="text-body" href="./product.html">Cotton floral print Dress</a> <br />
+                          <Link className="text-body" to={PATH.shop}>Cotton floral print Dress</Link> <br />
                           <span className="card-product-price">
                             <span className="sale text-primary">45,000</span>
                             <span className="text-muted line-through ml-1 inline-block">60,000</span>
@@ -248,14 +249,14 @@ const CheckOutPage = () => {
                     <div className="row align-items-center">
                       <div className="col-4">
                         {/* Image */}
-                        <a href="./product.html">
+                        <Link to={PATH.shop}>
                           <img className="img-fluid" src="./img/products/product-10.jpg" alt="..." />
-                        </a>
+                        </Link>
                       </div>
                       <div className="col-8">
                         {/* Title */}
                         <p className="font-size-sm font-weight-bold mb-6">
-                          <a className="text-body" href="./product.html">Suede cross body Bag</a> <br />
+                          <Link className="text-body" to={PATH.shop}>Suede cross body Bag</Link> <br />
                           <span className="card-product-price">
                             <span className="sale text-primary">45,000</span>
                             <span className="text-muted line-through ml-1 inline-block">60,000</span>

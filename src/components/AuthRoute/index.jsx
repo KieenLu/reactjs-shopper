@@ -19,7 +19,6 @@ import { Navigate } from "../Navigate";
 const AuthRoute = ({ redirect = "/" }) => {
   const { user } = useAuth();
   const { state, pathname, search } = useLocation();
-  console.log(state);
 
   if (user)
     return (
