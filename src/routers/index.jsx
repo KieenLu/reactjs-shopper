@@ -1,8 +1,8 @@
 import { PATH } from "@/config/path";
 import { lazy } from "react";
 import profile from "./profile";
+const ProductDetails = lazy(() => import("@/pages/product/[slug]"));
 const AuthRoute = lazy(() => import("@/components/AuthRoute"));
-const ProductDetails = lazy(() => import("@/import /product/[slug]"));
 const Checkout = lazy(() => import("../pages/Checkout"));
 const ViewCart = lazy(() => import("@/pages/cart"));
 const ResetPasswordPage = lazy(() => import("@/pages/reset-password"));
