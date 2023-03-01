@@ -68,7 +68,7 @@ export const CartDrawer = () => {
           </div>
         ) : (
           <div className="modal-body">
-            <a className="btn btn-block btn-dark" href="./checkout.html">
+            <a className="btn btn-block btn-dark" href="#">
               Continue to Checkout
             </a>
             <Link

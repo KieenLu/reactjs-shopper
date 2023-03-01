@@ -20,7 +20,6 @@ const CartItem = ({ thumbnail_url, name, real_price, id, quantity }) => {
           quantity,
         })
       );
-      bb;
       setDisable(false);
     } catch (err) {
       console.error(err);
